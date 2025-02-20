@@ -1,0 +1,18 @@
+# Build
+build
+cmake-build-debug
+cmake-build-release
+
+# JetBrains
+.idea
+
+# Visual Studio
+.vscode
+out
+.vs
+CMakeSettings.json
+
+# Outros
+*.log
+.cache
+uploads
