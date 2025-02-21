@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Start server (lldb)",
+            "program": "${workspaceFolder}/build/efe",
+            "args": ["-d"],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

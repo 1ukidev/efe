@@ -7,7 +7,6 @@ cmake-build-release
 .idea
 
 # Visual Studio
-.vscode
 out
 .vs
 CMakeSettings.json
