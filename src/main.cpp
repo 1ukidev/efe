@@ -1,4 +1,5 @@
 #include "efe/Config.hpp"
+#include "efe/Constants.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -13,15 +14,13 @@ using namespace drogon;
 using namespace efe;
 namespace po = boost::program_options;
 
-static std::string_view art = R"(
+static constexpr std::string_view art = R"(
        __
   ___ / _| ___
  / _ \ |_ / _ \
 |  __/  _|  __/
  \___|_|  \___|
 )";
-
-static std::string_view version = "0.0.1";
 
 int main(int argc, char** argv)
 {

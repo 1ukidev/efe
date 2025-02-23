@@ -10,8 +10,11 @@ add_executable(
     "src/main.cpp"
     "src/efe/Config.cpp"
     "src/efe/Config.hpp"
+    "src/efe/Constants.hpp"
     "src/efe/JSON.cpp"
     "src/efe/JSON.hpp"
+    "src/efe/JWT.cpp"
+    "src/efe/JWT.hpp"
     "src/efe/Util.cpp"
     "src/efe/Util.hpp"
     "src/efe/controllers/RootController.cpp"
@@ -34,10 +37,12 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 
 find_package(Drogon CONFIG REQUIRED)
 find_package(Boost CONFIG REQUIRED COMPONENTS headers program_options)
+find_package(jwt-cpp CONFIG REQUIRED)
 
 target_link_libraries(
     efe PRIVATE
     Drogon::Drogon
     Boost::headers
     Boost::program_options
+    jwt-cpp::jwt-cpp
 )
