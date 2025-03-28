@@ -2,6 +2,7 @@
 
 #include "efe/JSON.hpp"
 
+#include <cstdint>
 #include <drogon/orm/Result.h>
 #include <json/value.h>
 #include <string>
@@ -63,5 +64,7 @@ namespace efe
          * @return JSON
          */
         virtual JSON toJSON() const = 0;
+
+        std::uint64_t id{};
     };
 }

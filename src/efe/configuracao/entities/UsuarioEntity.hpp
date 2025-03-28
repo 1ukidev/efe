@@ -3,7 +3,6 @@
 #include "efe/Entity.hpp"
 #include "efe/JSON.hpp"
 
-#include <cstdint>
 #include <drogon/orm/Result.h>
 #include <string>
 #include <unordered_map>
@@ -20,7 +19,7 @@ namespace efe::configuracao
             : nome(nome), senha(senha) {}
 
         std::string getClassName() const override { return "UsuarioEntity"; }
-        std::string getTable() const override { return "usuario"; };
+        std::string getTable() const override { return "usuario"; }
 
         const std::unordered_map<std::string, std::string> getColumns() const override;
 
@@ -29,7 +28,6 @@ namespace efe::configuracao
         std::string toString() const override;
         JSON toJSON() const override;
 
-        std::uint64_t id{};
         std::string nome;
         std::string senha;
     };

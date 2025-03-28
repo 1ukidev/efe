@@ -49,7 +49,7 @@ int main(int argc, char** argv)
         std::cout << desc << '\n';
         return EXIT_SUCCESS;
     } else if (vm.count("version")) {
-        std::cout << version << '\n';
+        std::cout << Constants::version << '\n';
         return EXIT_SUCCESS;
     }
 

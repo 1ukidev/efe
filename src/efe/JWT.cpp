@@ -4,10 +4,11 @@
 #include <chrono>
 #include <string>
 #include <jwt-cpp/jwt.h>
+#include <utility>
 
 namespace efe
 {
-    std::string generateToken(const std::string& userId)
+    std::string JWT::generateToken(const std::string& userId)
     {
         return jwt::create()
             .set_type("JWT")
@@ -15,6 +16,24 @@ namespace efe
             .set_subject(userId)
             .set_issued_at(std::chrono::system_clock::now())
             .set_expires_at(std::chrono::system_clock::now() + std::chrono::hours(1))
-            .sign(jwt::algorithm::hs256{secretKey.data()});
+            .sign(jwt::algorithm::hs256{Constants::secretKey.data()});
+    }
+
+    std::pair<bool, std::string> JWT::verify(const std::string& token)
+    {
+        try {
+            auto decoded = jwt::decode(token);
+            auto verifier = jwt::verify()
+                .allow_algorithm(jwt::algorithm::hs256{Constants::secretKey.data()})
+                .with_issuer("efe");
+
+            verifier.verify(decoded);
+
+            std::string sub = decoded.get_subject();
+
+            return {true, sub};
+        } catch (const std::exception&) {
+            return {false, ""};
+        }
     }
 }

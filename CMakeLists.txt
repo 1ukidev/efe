@@ -17,6 +17,8 @@ add_executable(
     "src/efe/JWT.hpp"
     "src/efe/Util.cpp"
     "src/efe/Util.hpp"
+    "src/efe/controllers/AuthController.cpp"
+    "src/efe/controllers/AuthController.hpp"
     "src/efe/controllers/RootController.cpp"
     "src/efe/controllers/RootController.hpp"
     "src/efe/controllers/UsuarioController.cpp"
