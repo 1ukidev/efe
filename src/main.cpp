@@ -58,7 +58,7 @@ int main(int argc, char** argv)
     auto threads = vm["threads"].as<unsigned short>();
     auto debug = vm["debug"].as<bool>();
 
-    std::cout << "\033c" << std::flush;
+    std::cout << "\033[H\033[2J" << std::flush;
     std::cout << art << '\n';
 
     auto& config = Config::getInstance();

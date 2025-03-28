@@ -13,11 +13,9 @@ namespace efe::controllers
     {
     public:
         METHOD_LIST_BEGIN
-            METHOD_ADD(AuthController::login, "/login", Post);
             METHOD_ADD(AuthController::verify, "/verify", Post);
         METHOD_LIST_END
 
-        Task<HttpResponsePtr> login(const HttpRequestPtr req);
         Task<HttpResponsePtr> verify(const HttpRequestPtr req);
     };
 }

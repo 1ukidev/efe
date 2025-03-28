@@ -5,7 +5,7 @@
 
 namespace efe
 {
-    class JWT
+    class JWT final
     {
     public:
         JWT() = delete;
