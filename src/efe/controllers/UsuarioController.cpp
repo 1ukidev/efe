@@ -29,6 +29,8 @@ namespace efe::controllers
             co_return resp;
         }
 
+        // TODO: Aplicar hash na senha
+
         UsuarioEntity entity(nome, senha);
         bool ok = co_await dao.saveCoro(entity);
 

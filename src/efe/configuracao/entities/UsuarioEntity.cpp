@@ -28,8 +28,7 @@ namespace efe::configuracao
     std::string UsuarioEntity::toString() const
     {
         return "UsuarioEntity[id=" + std::to_string(id) +
-               ", nome=" + nome +
-               ", senha=" + senha + ']';
+               ", nome=" + nome + ']';
     }
 
     JSON UsuarioEntity::toJSON() const
@@ -37,7 +36,6 @@ namespace efe::configuracao
         JSON json;
         json.value["id"] = id;
         json.value["nome"] = nome;
-        json.value["senha"] = senha;
         return json;
     }
 }

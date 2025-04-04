@@ -17,6 +17,11 @@ namespace efe
 
     bool Config::load()
     {
+        if (loaded) {
+            LOG_INFO << "Configurações já estão carregadas.";
+            return true;
+        }
+
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
         std::string path  = std::getenv("HOMEPATH");
 #else
@@ -50,8 +55,10 @@ namespace efe
             }
         }
 
-        if (!initDatabase())
+        if (!pull())
             return false;
+
+        loaded = true;
 
         return true;
     }
@@ -69,7 +76,7 @@ namespace efe
         return first == std::string::npos || last == std::string::npos ? "" : str.substr(first, last - first + 1);
     }
 
-    bool Config::initDatabase()
+    bool Config::pull()
     {
         database.name = "default";
         database.isFast = get("db.isFast") == "true";
@@ -85,8 +92,10 @@ namespace efe
         std::string connectionNumber = get("db.connectionNumber");
         database.connectionNumber = Util::isNumber(connectionNumber) ? std::stoul(connectionNumber) : 0;
 
+        jwtKey = get("jwt.key");
+
         if (database.host.empty() || database.port == 0 || database.username.empty() || database.password.empty()
-                || database.databaseName.empty() || database.connectionNumber == 0) {
+                || database.databaseName.empty() || database.connectionNumber == 0 || jwtKey.empty()) {
             LOG_ERROR << "Arquivo de configuração incompleto";
             return false;
         }

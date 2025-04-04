@@ -14,7 +14,10 @@ namespace efe
         Config& operator=(const Config&) = delete;
         static Config& getInstance();
 
+        bool loaded = false;
+
         drogon::orm::PostgresConfig database;
+        std::string jwtKey;
 
         /**
          * @brief Carrega as configurações do arquivo de configuração.
@@ -30,7 +33,8 @@ namespace efe
          * @param default_value
          * @return std::string
          */
-        std::string get(const std::string& key, const std::string& default_value = "") const;
+        std::string get(const std::string& key,
+                        const std::string& default_value = "") const;
 
     private:
         Config() = default;
@@ -38,6 +42,6 @@ namespace efe
 
         std::unordered_map<std::string, std::string> config_;
         std::string trim(const std::string& str);
-        bool initDatabase();
+        bool pull();
     };
 }

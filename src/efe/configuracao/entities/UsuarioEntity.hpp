@@ -22,7 +22,6 @@ namespace efe::configuracao
         std::string getTable() const override { return "usuario"; }
 
         const std::unordered_map<std::string, std::string> getColumns() const override;
-
         void fromResultSet(const drogon::orm::Result& result) override;
 
         std::string toString() const override;

@@ -1,6 +1,7 @@
 #include "efe/Config.hpp"
 #include "efe/Constants.hpp"
 
+#include <chrono>
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -40,7 +41,7 @@ int main(int argc, char** argv)
     try {
         store(parse_command_line(argc, argv, desc), vm);
         notify(vm);
-    } catch (const po::error& e) {
+    } catch (const po::error&) {
         std::cerr << "Opção inválida. Use '--help' para mais informações.\n";
         return EXIT_FAILURE;
     }
@@ -53,12 +54,14 @@ int main(int argc, char** argv)
         return EXIT_SUCCESS;
     }
 
+    auto startTime = std::chrono::steady_clock::now();
+
     auto url = vm["url"].as<std::string>();
     auto port = vm["port"].as<unsigned short>();
     auto threads = vm["threads"].as<unsigned short>();
     auto debug = vm["debug"].as<bool>();
 
-    std::cout << "\033c" << std::flush;
+    std::cout << "\033[H\033[2J" << std::flush;
     std::cout << art << '\n';
 
     auto& config = Config::getInstance();
@@ -67,8 +70,12 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    app().registerBeginningAdvice([port, threads]() {
+    app().registerBeginningAdvice([port, threads, startTime]() {
+        auto endTime = std::chrono::steady_clock::now();
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
+        
         LOG_INFO << "Servidor inicializado com sucesso na porta " << port << " com " << threads << " thread(s)";
+        LOG_INFO << "Levou " << elapsedTime << " ms para inicializar";
     });
 
     app().addDbClient(config.database)
