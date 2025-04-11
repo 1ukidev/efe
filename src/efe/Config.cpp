@@ -23,11 +23,12 @@ namespace efe
         }
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-        std::string path  = std::getenv("HOMEPATH");
+        std::string path  = std::getenv("USERPROFILE");
+        path += "\\efe.properties";
 #else
         std::string path = std::getenv("HOME");
-#endif
         path += "/efe.properties";
+#endif
 
         if (!std::filesystem::exists(path)) {
             LOG_ERROR << "Arquivo de configuração não encontrado: " << path;

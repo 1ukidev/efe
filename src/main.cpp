@@ -1,5 +1,6 @@
 #include "efe/Config.hpp"
 #include "efe/Constants.hpp"
+#include "efe/Global.hpp"
 
 #include <chrono>
 #include <cstdlib>
@@ -55,6 +56,9 @@ int main(int argc, char** argv)
     }
 
     auto startTime = std::chrono::steady_clock::now();
+
+    auto& global = Global::getInstance();
+    global.startTime = startTime;
 
     auto url = vm["url"].as<std::string>();
     auto port = vm["port"].as<unsigned short>();
