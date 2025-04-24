@@ -51,6 +51,34 @@ namespace efe
         }
 
         /**
+         * @brief Atualiza a entidade no banco de dados.
+         * 
+         * @param entity
+         * @return bool
+         */
+        virtual drogon::Task<bool> updateCoro(T& entity)
+        {
+            LOG_DEBUG << '(' << entity.getClassName() << ") Atualizando entidade...";
+
+            try {
+                std::string sql = buildUpdateQuery(entity);
+                auto result = co_await getDb()->execSqlCoro(sql);
+
+                if (result.affectedRows() == 0) {
+                    LOG_WARN << '(' << entity.getClassName() << ") Nenhum registro atualizado.";
+                    co_return false;
+                }
+
+                LOG_DEBUG << '(' << entity.getClassName() << ") Entidade atualizada com sucesso.";
+                co_return true;
+            } catch (const drogon::orm::DrogonDbException& e) {
+                LOG_ERROR << '(' << entity.getClassName() << ") Erro ao atualizar entidade: "
+                          << e.base().what();
+                co_return false;
+            }
+        }
+
+        /**
          * @brief Busca uma entidade pelo id.
          * 
          * @param id
@@ -81,7 +109,7 @@ namespace efe
         }
 
     protected:
-        drogon::orm::DbClientPtr getDb()
+        inline drogon::orm::DbClientPtr getDb()
         {
             return Util::getDbClient();
         }
@@ -109,6 +137,24 @@ namespace efe
             }
 
             sql += ") returning id;";
+            return sql;
+        }
+
+        std::string buildUpdateQuery(const T& entity)
+        {
+            std::unordered_map<std::string, std::string> columns = entity.getColumns();
+
+            std::string sql = "UPDATE " + entity.getTable() + " SET ";
+
+            bool first = true;
+            for (const auto& [column, value] : columns) {
+                if (column == "id") continue;
+                if (!first) sql += ", ";
+                sql += column + " = " + (Util::isNumber(value) ? value : ("'" + value + "'"));
+                first = false;
+            }
+
+            sql += " WHERE id = " + std::to_string(entity.id) + ';';
             return sql;
         }
     };
