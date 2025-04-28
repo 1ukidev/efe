@@ -21,7 +21,7 @@ namespace efe::controllers
         std::string token = json->get("token", "").asString();
         if (token.empty()) {
             resp->setStatusCode(k400BadRequest);
-            resp->setBody(JSON::createResponse("Token é obrigatório", true));
+            resp->setBody(JSON::createResponse("Token é obrigatório", jt::error));
             co_return resp;
         }
 

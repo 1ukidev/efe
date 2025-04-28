@@ -25,7 +25,7 @@ namespace efe::controllers
 
         if (nome.empty() || senha.empty()) {
             resp->setStatusCode(k400BadRequest);
-            resp->setBody(JSON::createResponse("Nome e senha são obrigatórios", true));
+            resp->setBody(JSON::createResponse("Nome e senha são obrigatórios", jt::error));
             co_return resp;
         }
 
@@ -37,7 +37,7 @@ namespace efe::controllers
         resp->setStatusCode(ok ? k201Created : k500InternalServerError);
         resp->setBody(
             ok ? entity.toJSON().getId().value()
-               : JSON::createResponse("Erro ao salvar usuário", true)
+               : JSON::createResponse("Erro ao salvar usuário", jt::error)
         );
         co_return resp;
     }
@@ -50,7 +50,7 @@ namespace efe::controllers
 
         if (!entity.has_value()) {
             resp->setStatusCode(k404NotFound);
-            resp->setBody(JSON::createResponse("Usuário não encontrado", true));
+            resp->setBody(JSON::createResponse("Usuário não encontrado", jt::error));
             co_return resp;
         }
 

@@ -8,6 +8,12 @@
 
 namespace efe
 {
+    enum class jt
+    {
+        message = 0,
+        error = 1
+    };
+
     class JSON final
     {
     public:
@@ -34,11 +40,11 @@ namespace efe
          * @brief Cria uma resposta JSON.
          * 
          * @param msg
-         * @param isError
+         * @param type
          * @return std::string
          */
         static std::string createResponse(const std::string& msg,
-                                          const bool isError = false);
+                                          const jt type = jt::message);
 
         /**
          * @brief Cria uma resposta JSON de requisição inválida.

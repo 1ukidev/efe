@@ -24,15 +24,17 @@ namespace efe
         return std::nullopt;
     }
 
-    std::string JSON::createResponse(const std::string& msg, const bool isError)
+    std::string JSON::createResponse(const std::string& msg, const jt type)
     {
-        return isError ? "{\"error\":\"" + msg + "\"}\n" : "{\"message\":\"" + msg + "\"}\n";
+        return type == jt::error ? 
+            "{\"error\":\"" + msg + "\"}\n" : 
+            "{\"message\":\"" + msg + "\"}\n";
     }
 
     HttpResponsePtr JSON::invalidRequest()
     {
         auto resp = HttpResponse::newHttpResponse(k400BadRequest, CT_APPLICATION_JSON);
-        resp->setBody(createResponse("Corpo da requisição inválido", true));
+        resp->setBody(createResponse("Corpo da requisição inválido", jt::error));
         return resp;
     }
 }

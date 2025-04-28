@@ -1,15 +1,16 @@
 #include "efe/Config.hpp"
 #include "efe/Constants.hpp"
 #include "efe/Global.hpp"
+#include "efe/JSON.hpp"
 
+#include <boost/program_options.hpp>
 #include <chrono>
 #include <cstdlib>
+#include <drogon/drogon.h>
 #include <iostream>
 #include <string>
 #include <string_view>
 #include <thread>
-#include <boost/program_options.hpp>
-#include <drogon/drogon.h>
 #include <trantor/utils/Logger.h>
 
 using namespace drogon;
@@ -23,6 +24,16 @@ static constexpr std::string_view art = R"(
 |  __/  _|  __/
  \___|_|  \___|
 )";
+
+void exceptionHandler(const std::exception& e,
+                      const HttpRequestPtr&,
+                      std::function<void(const HttpResponsePtr&)>&& callback)
+{
+    LOG_ERROR << "Ocorreu uma exceção: " << e.what();
+    auto resp = HttpResponse::newHttpResponse(k500InternalServerError, CT_APPLICATION_JSON);
+    resp->setBody(JSON::createResponse(e.what(), jt::error));
+    callback(resp);
+}
 
 int main(int argc, char** argv)
 {
@@ -82,7 +93,8 @@ int main(int argc, char** argv)
         LOG_INFO << "Levou " << elapsedTime << " ms para inicializar";
     });
 
-    app().addDbClient(config.database)
+    app().setExceptionHandler(exceptionHandler)
+         .addDbClient(config.database)
          .setLogPath("", "", 100000000, 0, false)
          .setLogLevel(debug ? trantor::Logger::kDebug : trantor::Logger::kInfo)
          .addListener(url, port)

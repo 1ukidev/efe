@@ -18,7 +18,7 @@ namespace efe::controllers
     {
     public:
         METHOD_LIST_BEGIN
-            METHOD_ADD(UsuarioController::saveUser, "/", Post);
+            METHOD_ADD(UsuarioController::saveUser, "", Post);
             METHOD_ADD(UsuarioController::getUser, "/{id}", Get);
         METHOD_LIST_END
 
