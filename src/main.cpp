@@ -66,6 +66,11 @@ int main(int argc, char** argv)
         return EXIT_SUCCESS;
     }
 
+    std::set_terminate([]() {
+        LOG_ERROR << "Ops...";
+        LOG_ERROR << "std::terminate() chamado. Exceção não tratada?";
+    });
+
     auto startTime = std::chrono::steady_clock::now();
 
     auto& global = Global::getInstance();
