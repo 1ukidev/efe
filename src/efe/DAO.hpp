@@ -86,24 +86,55 @@ namespace efe
          */
         virtual drogon::Task<std::optional<T>> findByIdCoro(std::uint64_t id)
         {
-            LOG_DEBUG << '(' << T().getClassName() << ") Buscando entidade com id " << id << "...";
+            T entity;
+            LOG_DEBUG << '(' << entity.getClassName() << ") Buscando entidade com id " << id << "...";
 
             try {
                 std::string sql = "SELECT * FROM " + T().getTable() + " WHERE id = $1;";
                 auto result = co_await getDb()->execSqlCoro(sql, id);
 
                 if (result.size() == 0) {
-                    LOG_WARN << '(' << T().getClassName() << ") Nenhum registro encontrado para o id "
+                    LOG_WARN << '(' << entity.getClassName() << ") Nenhum registro encontrado para o id "
                              << id;
                     co_return std::nullopt;
                 }
 
-                T entity;
                 entity.fromResultSet(result);
                 co_return entity;
             } catch (const drogon::orm::DrogonDbException& e) {
-                LOG_ERROR << '(' << T().getClassName() << ") Erro ao buscar entidade com id " << id
+                LOG_ERROR << '(' << entity.getClassName() << ") Erro ao buscar entidade com id " << id
                           << ": " << e.base().what();
+                co_return std::nullopt;
+            }
+        }
+
+        /**
+         * @brief Busca uma entidade pelo where.
+         * 
+         * @param where
+         * @return std::optional<T>
+         */
+        virtual drogon::Task<std::optional<T>> findOne(const std::string& where)
+        {
+            T entity;
+            LOG_DEBUG << '(' << entity.getClassName() << ") Buscando entidade com " << where
+                      << "...";
+
+            try {
+                std::string sql = "SELECT * FROM " + T().getTable() + " WHERE " + where + ';';
+                auto result = co_await getDb()->execSqlCoro(sql);
+
+                if (result.size() == 0) {
+                    LOG_WARN << '(' << entity.getClassName() << ") Nenhum registro encontrado para "
+                             << where;
+                    co_return std::nullopt;
+                }
+
+                entity.fromResultSet(result);
+                co_return entity;
+            } catch (const drogon::orm::DrogonDbException& e) {
+                LOG_ERROR << '(' << entity.getClassName() << ") Erro ao buscar entidade com "
+                          << where << ": " << e.base().what();
                 co_return std::nullopt;
             }
         }

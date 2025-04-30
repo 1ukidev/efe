@@ -1,5 +1,6 @@
 #pragma once
 
+#include <drogon/HttpRequest.h>
 #include <drogon/HttpResponse.h>
 #include <json/value.h>
 #include <json/writer.h>
@@ -11,7 +12,15 @@ namespace efe
     enum class jt
     {
         message = 0,
-        error = 1
+        success = 1,
+        error = 2
+    };
+
+    struct AuthorizationResult
+    {
+        bool valid;
+        drogon::HttpResponsePtr errorResp;
+        std::string usuarioId;
     };
 
     class JSON final
@@ -30,13 +39,6 @@ namespace efe
         std::string toString() const;
 
         /**
-         * @brief Retorna o valor do campo "id" do JSON.
-         * 
-         * @return std::optional<std::string>
-         */
-        std::optional<std::string> getId() const;
-
-        /**
          * @brief Cria uma resposta JSON.
          * 
          * @param msg
@@ -47,10 +49,19 @@ namespace efe
                                           const jt type = jt::message);
 
         /**
-         * @brief Cria uma resposta JSON de requisição inválida.
+         * @brief Verifica se o corpo da requisição é um JSON válido.
          * 
-         * @return drogon::HttpResponsePtr
-         */                                 
-        static drogon::HttpResponsePtr invalidRequest();
+         * @param req
+         * @return <std::optional<drogon::HttpResponsePtr>
+         */
+        static std::optional<drogon::HttpResponsePtr> checkRequest(const drogon::HttpRequestPtr& req);
+
+        /**
+         * @brief Verifica se o usuário está autorizado a acessar o recurso.
+         * 
+         * @param req
+         * @return AuthorizationResult
+         */
+        static AuthorizationResult checkAuthorization(const drogon::HttpRequestPtr& req);
     };
 }

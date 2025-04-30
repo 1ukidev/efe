@@ -26,10 +26,10 @@ static constexpr std::string_view art = R"(
 )";
 
 void exceptionHandler(const std::exception& e,
-                      const HttpRequestPtr&,
+                      const HttpRequestPtr& req,
                       std::function<void(const HttpResponsePtr&)>&& callback)
 {
-    LOG_ERROR << "Ocorreu uma exceção: " << e.what();
+    LOG_ERROR << "Ocorreu uma exceção: " << e.what() << " (" << req->getPath() << ')';
     auto resp = HttpResponse::newHttpResponse(k500InternalServerError, CT_APPLICATION_JSON);
     resp->setBody(JSON::createResponse(e.what(), jt::error));
     callback(resp);
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 
     auto& config = Config::getInstance();
     if (!config.load()) {
-        LOG_ERROR << "Erro ao carregar arquivo de configuração";
+        LOG_ERROR << "Erro ao carregar arquivo de configuração. Encerrando...";
         return EXIT_FAILURE;
     }
 

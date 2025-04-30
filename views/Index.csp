@@ -15,5 +15,6 @@
 <body>
     <h2>Servidor em execução...</h2>
     <h3>Tempo ativo: [[ uptime ]]</h3>
+    [[ rotas ]]
 </body>
 </html>

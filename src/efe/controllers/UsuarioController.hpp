@@ -2,7 +2,6 @@
 
 #include "efe/configuracao/dao/UsuarioDAO.hpp"
 
-#include <cstdint>
 #include <drogon/HttpController.h>
 #include <drogon/HttpResponse.h>
 #include <drogon/HttpRequest.h>
@@ -19,11 +18,9 @@ namespace efe::controllers
     public:
         METHOD_LIST_BEGIN
             METHOD_ADD(UsuarioController::saveUser, "", Post);
-            METHOD_ADD(UsuarioController::getUser, "/{id}", Get);
         METHOD_LIST_END
 
         Task<HttpResponsePtr> saveUser(const HttpRequestPtr req);
-        Task<HttpResponsePtr> getUser(const HttpRequestPtr req, std::uint64_t id);
 
     private:
         UsuarioDAO dao;

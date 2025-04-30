@@ -1,60 +1,59 @@
-#include "efe/controllers/UsuarioController.hpp"
+#include "bcrypt/BCrypt.hpp"
 #include "efe/JSON.hpp"
+#include "efe/controllers/UsuarioController.hpp"
 #include "efe/configuracao/entities/UsuarioEntity.hpp"
 
-#include <cstdint>
 #include <drogon/HttpRequest.h>
 #include <drogon/HttpResponse.h>
 #include <drogon/HttpTypes.h>
 #include <drogon/utils/coroutine.h>
-#include <optional>
 #include <string>
 
 namespace efe::controllers
 {
     Task<HttpResponsePtr> UsuarioController::saveUser(const HttpRequestPtr req)
     {
-        auto json = req->getJsonObject();
-        if (!json) co_return JSON::invalidRequest();
+        auto error = JSON::checkRequest(req);
+        if (error.has_value()) co_return error.value();
+
+        // TODO: Verificar se o usuário pode salvar outro usuário
+
+        // auto auth = JSON::checkAuthorization(req);
+        // if (!auth.valid) co_return auth.errorResp;
 
         auto resp = HttpResponse::newHttpResponse();
         resp->setContentTypeCode(CT_APPLICATION_JSON);
 
+        auto json = req->getJsonObject();
         std::string nome = json->get("nome", "").asString();
+        std::string login = json->get("login", "").asString();
         std::string senha = json->get("senha", "").asString();
 
-        if (nome.empty() || senha.empty()) {
+        std::string faltando;
+        if (nome.empty()) faltando += "nome, ";
+        if (login.empty()) faltando += "login, ";
+        if (senha.empty()) faltando += "senha, ";
+
+        if (!faltando.empty()) {
+            faltando = faltando.substr(0, faltando.size() - 2);
+            std::string msg = "Campo(s) obrigatórios ausentes: " + faltando;
             resp->setStatusCode(k400BadRequest);
-            resp->setBody(JSON::createResponse("Nome e senha são obrigatórios", jt::error));
+            resp->setBody(JSON::createResponse(msg, jt::error));
             co_return resp;
         }
 
-        // TODO: Aplicar hash na senha
+        // TODO: Adicionar mais validações
 
-        UsuarioEntity entity(nome, senha);
+        senha = BCrypt::generateHash(senha);
+
+        UsuarioEntity entity(nome, login, senha);
         bool ok = co_await dao.saveCoro(entity);
 
         resp->setStatusCode(ok ? k201Created : k500InternalServerError);
-        resp->setBody(
-            ok ? entity.toJSON().getId().value()
-               : JSON::createResponse("Erro ao salvar usuário", jt::error)
-        );
-        co_return resp;
-    }
-
-    Task<HttpResponsePtr> UsuarioController::getUser(const HttpRequestPtr, std::uint64_t id)
-    {
-        auto resp = HttpResponse::newHttpResponse(k200OK, CT_APPLICATION_JSON);
-
-        std::optional<UsuarioEntity> entity = co_await dao.findByIdCoro(id);
-
-        if (!entity.has_value()) {
-            resp->setStatusCode(k404NotFound);
-            resp->setBody(JSON::createResponse("Usuário não encontrado", jt::error));
-            co_return resp;
-        }
-
-        resp->setBody(entity->toJSON().toString());
+        resp->setBody(JSON::createResponse(
+            ok ? "Salvo com sucesso" : "Erro interno ao salvar usuário",
+            ok ? jt::success : jt::error
+        ));
         co_return resp;
     }
 }

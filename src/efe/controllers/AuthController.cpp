@@ -1,4 +1,5 @@
 #include "efe/controllers/AuthController.hpp"
+#include "bcrypt/BCrypt.hpp"
 #include "efe/JSON.hpp"
 #include "efe/JWT.hpp"
 
@@ -10,26 +11,70 @@
 
 namespace efe::controllers
 {
-    Task<HttpResponsePtr> AuthController::verify(const HttpRequestPtr req)
+    Task<HttpResponsePtr> AuthController::verifyToken(const HttpRequestPtr req)
     {
-        auto json = req->getJsonObject();
-        if (!json) co_return JSON::invalidRequest();
+        auto error = JSON::checkRequest(req);
+        if (error.has_value()) co_return error.value();
 
         auto resp = HttpResponse::newHttpResponse();
         resp->setContentTypeCode(CT_APPLICATION_JSON);
 
+        auto json = req->getJsonObject();
         std::string token = json->get("token", "").asString();
+
         if (token.empty()) {
             resp->setStatusCode(k400BadRequest);
             resp->setBody(JSON::createResponse("Token é obrigatório", jt::error));
             co_return resp;
         }
 
-        auto [valid, userId] = JWT::verify(token);
+        auto result = JWT::verify(token);
 
         JSON jsonResp;
-        jsonResp.value["valid"] = valid;
-        jsonResp.value["userId"] = userId;
+        jsonResp.value["valid"] = result.first;
+
+        resp->setStatusCode(k200OK);
+        resp->setBody(jsonResp.toString());
+        co_return resp;
+    }
+
+    Task<HttpResponsePtr> AuthController::loginByUsuario(const HttpRequestPtr req)
+    {
+        auto error = JSON::checkRequest(req);
+        if (error.has_value()) co_return error.value();
+
+        auto resp = HttpResponse::newHttpResponse();
+        resp->setContentTypeCode(CT_APPLICATION_JSON);
+
+        auto json = req->getJsonObject();
+        std::string login = json->get("login", "").asString();
+        std::string senha = json->get("senha", "").asString();
+
+        std::string faltando;
+        if (login.empty()) faltando += "login, ";
+        if (senha.empty()) faltando += "senha, ";
+
+        if (!faltando.empty()) {
+            faltando = faltando.substr(0, faltando.size() - 2);
+            std::string msg = "Campo(s) obrigatórios ausentes: " + faltando;
+            resp->setStatusCode(k400BadRequest);
+            resp->setBody(JSON::createResponse(msg, jt::error));
+            co_return resp;
+        }
+
+        auto usuario = co_await usuarioDAO.findByLogin(login);
+        bool ok = usuario.has_value() && BCrypt::validatePassword(senha, usuario->senha);
+
+        if (!ok) {
+            resp->setStatusCode(k401Unauthorized);
+            resp->setBody(JSON::createResponse("Login ou senha inválidos", jt::error));
+            co_return resp;
+        }
+
+        auto jwt = JWT::generate(usuario->id);
+
+        JSON jsonResp;
+        jsonResp.value["token"] = jwt;
 
         resp->setStatusCode(k200OK);
         resp->setBody(jsonResp.toString());

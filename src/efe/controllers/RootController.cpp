@@ -2,11 +2,13 @@
 #include "efe/controllers/RootController.hpp"
 
 #include <chrono>
+#include <drogon/HttpAppFramework.h>
 #include <drogon/HttpRequest.h>
 #include <drogon/HttpResponse.h>
 #include <drogon/HttpTypes.h>
 #include <drogon/HttpViewData.h>
 #include <string>
+#include <vector>
 
 namespace efe::controllers
 {
@@ -26,8 +28,16 @@ namespace efe::controllers
                              std::to_string(minutes) + "m " +
                              std::to_string(seconds) + "s";
 
+        std::string rotas = "<h3>Rotas disponíveis:</h3>\n    <ul>";
+        std::vector<HttpHandlerInfo> handlers = app().getHandlersInfo();
+        for (const auto& handler : handlers) {
+            rotas += "\n        <li>" + std::get<0>(handler) + " - " + std::get<2>(handler) + "</li>";
+        }
+        rotas += "\n    </ul>";
+
         HttpViewData data;
         data.insert("uptime", uptime);
+        data.insert("rotas", rotas);
 
         auto resp = HttpResponse::newHttpViewResponse("Index.csp", data);
         callback(resp);

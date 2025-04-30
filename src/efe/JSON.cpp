@@ -1,5 +1,7 @@
 #include "JSON.hpp"
+#include "efe/JWT.hpp"
 
+#include <drogon/HttpRequest.h>
 #include <drogon/HttpResponse.h>
 #include <json/value.h>
 #include <json/writer.h>
@@ -16,25 +18,64 @@ namespace efe
         return writer.write(value);
     }
 
-    std::optional<std::string> JSON::getId() const
+    std::string JSON::createResponse(const std::string& msg, const jt type)
     {
-        if (value.isMember("id")) {
-            return "{\"id\":\"" + value["id"].asString() + "\"}\n";
+        switch (type) {
+            case jt::message:
+                return "{\"message\":\"" + msg + "\"}\n";
+            case jt::success:
+                return "{\"success\":\"" + msg + "\"}\n";
+            case jt::error:
+                return "{\"error\":\"" + msg + "\"}\n";
+            default:
+                return "{\"error\":\"Tipo de resposta inválido\"}\n";
         }
+    }
+
+    std::optional<HttpResponsePtr> JSON::checkRequest(const HttpRequestPtr& req)
+    {
+        auto json = req->getJsonObject();
+        if (!json) {
+            auto resp = HttpResponse::newHttpResponse(k400BadRequest, CT_APPLICATION_JSON);
+            resp->setBody(createResponse("Corpo da requisição inválido", jt::error));
+            return resp;
+        }
+
         return std::nullopt;
     }
 
-    std::string JSON::createResponse(const std::string& msg, const jt type)
+    AuthorizationResult JSON::checkAuthorization(const HttpRequestPtr& req)
     {
-        return type == jt::error ? 
-            "{\"error\":\"" + msg + "\"}\n" : 
-            "{\"message\":\"" + msg + "\"}\n";
-    }
+        auto token = req->getHeader("Authorization");
+        if (token.empty()) {
+            return {
+                .valid = false,
+                .errorResp = [] {
+                    auto r = HttpResponse::newHttpResponse(k401Unauthorized, CT_APPLICATION_JSON);
+                    r->setBody(createResponse("Token de autorização não encontrado", jt::error));
+                    return r;
+                }(),
+                .usuarioId = ""
+            };
+        }
 
-    HttpResponsePtr JSON::invalidRequest()
-    {
-        auto resp = HttpResponse::newHttpResponse(k400BadRequest, CT_APPLICATION_JSON);
-        resp->setBody(createResponse("Corpo da requisição inválido", jt::error));
-        return resp;
+        auto [valid, usuarioId] = JWT::verify(token);
+        if (!valid) {
+            return {
+                .valid = false,
+                .errorResp = [] {
+                    auto r = HttpResponse::newHttpResponse(k401Unauthorized, CT_APPLICATION_JSON);
+                    r->setBody(createResponse("Token de autorização inválido", jt::error));
+                    return r;
+                }(),
+                .usuarioId = ""
+            };
+        }
+
+        return {
+            .valid = true,
+            .errorResp = nullptr,
+            .usuarioId = usuarioId
+        };
     }
 }

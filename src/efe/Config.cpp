@@ -82,22 +82,26 @@ namespace efe
         database.name = "default";
         database.isFast = get("db.isFast") == "true";
         database.host = get("db.host");
-        database.port = std::stoul(get("db.port"));
+        database.port = Util::isNumber(get("db.port")) ? std::stoul(get("db.port")) : 0;
         database.username = get("db.user");
         database.password = get("db.password");
         database.databaseName = get("db.databaseName");
-
-        std::string port = get("db.port");
-        database.port = Util::isNumber(port) ? std::stoul(port) : 0;
 
         std::string connectionNumber = get("db.connectionNumber");
         database.connectionNumber = Util::isNumber(connectionNumber) ? std::stoul(connectionNumber) : 0;
 
         jwtKey = get("jwt.key");
 
+        if (database.host.empty()) LOG_ERROR << "Configuração ausente: db.host";
+        if (database.port == 0) LOG_ERROR << "Configuração inválida ou ausente: db.port";
+        if (database.username.empty()) LOG_ERROR << "Configuração ausente: db.user";
+        if (database.password.empty()) LOG_ERROR << "Configuração ausente: db.password";
+        if (database.databaseName.empty()) LOG_ERROR << "Configuração ausente: db.databaseName";
+        if (database.connectionNumber == 0) LOG_ERROR << "Configuração inválida ou ausente: db.connectionNumber";
+        if (jwtKey.empty()) LOG_ERROR << "Configuração ausente: jwt.key";
+
         if (database.host.empty() || database.port == 0 || database.username.empty() || database.password.empty()
                 || database.databaseName.empty() || database.connectionNumber == 0 || jwtKey.empty()) {
-            LOG_ERROR << "Arquivo de configuração incompleto";
             return false;
         }
 

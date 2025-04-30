@@ -15,8 +15,9 @@ namespace efe::configuracao
         UsuarioEntity() = default;
         ~UsuarioEntity() = default;
 
-        UsuarioEntity(const std::string& nome, const std::string& senha)
-            : nome(nome), senha(senha) {}
+        UsuarioEntity(const std::string& nome, const std::string& login,
+                      const std::string& senha)
+            : nome(nome), login(login), senha(senha) {}
 
         std::string getClassName() const override { return "UsuarioEntity"; }
         std::string getTable() const override { return "usuario"; }
@@ -28,6 +29,7 @@ namespace efe::configuracao
         JSON toJSON() const override;
 
         std::string nome;
+        std::string login;
         std::string senha;
     };
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <utility>
 
@@ -13,10 +14,10 @@ namespace efe
         /**
          * @brief Gera um token JWT para o usuário.
          * 
-         * @param userId
+         * @param usuarioId
          * @return std::string
          */
-        static std::string generateToken(const std::string& userId);
+        static std::string generate(std::uint64_t usuarioId);
 
         /**
          * @brief Verifica se o token JWT é válido.
