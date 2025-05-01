@@ -25,9 +25,9 @@ namespace efe::controllers
         resp->setContentTypeCode(CT_APPLICATION_JSON);
 
         auto json = req->getJsonObject();
-        std::string nome = json->get("nome", "").asString();
-        std::string login = json->get("login", "").asString();
-        std::string senha = json->get("senha", "").asString();
+        auto nome = json->get("nome", "").asString();
+        auto login = json->get("login", "").asString();
+        auto senha = json->get("senha", "").asString();
 
         std::string faltando;
         if (nome.empty()) faltando += "nome, ";

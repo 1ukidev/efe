@@ -11,7 +11,6 @@
 #include <string>
 #include <trantor/utils/Logger.h>
 #include <type_traits>
-#include <unordered_map>
 
 namespace efe
 {
@@ -148,7 +147,7 @@ namespace efe
     private:
         std::string buildInsertQuery(const T& entity)
         {
-            std::unordered_map<std::string, std::string> columns = entity.getColumns();
+            auto columns = entity.getColumns();
 
             std::string sql = "INSERT INTO " + entity.getTable() + " (";
 
@@ -173,7 +172,7 @@ namespace efe
 
         std::string buildUpdateQuery(const T& entity)
         {
-            std::unordered_map<std::string, std::string> columns = entity.getColumns();
+            auto columns = entity.getColumns();
 
             std::string sql = "UPDATE " + entity.getTable() + " SET ";
 

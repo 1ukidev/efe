@@ -20,7 +20,7 @@ namespace efe::controllers
         resp->setContentTypeCode(CT_APPLICATION_JSON);
 
         auto json = req->getJsonObject();
-        std::string token = json->get("token", "").asString();
+        auto token = json->get("token", "").asString();
 
         if (token.empty()) {
             resp->setStatusCode(k400BadRequest);
@@ -47,8 +47,8 @@ namespace efe::controllers
         resp->setContentTypeCode(CT_APPLICATION_JSON);
 
         auto json = req->getJsonObject();
-        std::string login = json->get("login", "").asString();
-        std::string senha = json->get("senha", "").asString();
+        auto login = json->get("login", "").asString();
+        auto senha = json->get("senha", "").asString();
 
         std::string faltando;
         if (login.empty()) faltando += "login, ";
@@ -71,7 +71,7 @@ namespace efe::controllers
             co_return resp;
         }
 
-        auto jwt = JWT::generate(usuario->id);
+        std::string jwt = JWT::generate(usuario->id);
 
         JSON jsonResp;
         jsonResp.value["token"] = jwt;
