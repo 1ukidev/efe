@@ -9,15 +9,14 @@
 
 namespace efe
 {
-    Config& Config::getInstance()
+    bool Config::getLoaded()
     {
-        static Config instance;
-        return instance;
+        return loaded_;
     }
 
     bool Config::load()
     {
-        if (loaded) {
+        if (loaded_) {
             LOG_INFO << "Configurações já estão carregadas.";
             return true;
         }
@@ -59,7 +58,7 @@ namespace efe
         if (!pull())
             return false;
 
-        loaded = true;
+        loaded_ = true;
 
         return true;
     }
@@ -80,9 +79,12 @@ namespace efe
     bool Config::pull()
     {
         database.name = "default";
-        database.isFast = get("db.isFast") == "true";
+        database.isFast = true;
         database.host = get("db.host");
-        database.port = Util::isNumber(get("db.port")) ? std::stoul(get("db.port")) : 0;
+
+        std::string port = get("db.port");
+        database.port = Util::isNumber(port) ? std::stoul(port) : 0;
+
         database.username = get("db.user");
         database.password = get("db.password");
         database.databaseName = get("db.databaseName");

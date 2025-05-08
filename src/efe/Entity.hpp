@@ -34,7 +34,7 @@ namespace efe
          * 
          * @return const std::unordered_map<std::string, std::string>
          */
-        virtual const std::unordered_map<std::string, std::string> getColumns() const = 0;
+        virtual const std::unordered_map<std::string, std::string>& getColumns() const = 0;
 
         /**
          * @brief Preenche a entidade com os valores do resultado de uma consulta.

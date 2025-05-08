@@ -4,6 +4,7 @@
 #include "efe/Util.hpp"
 
 #include <cstdint>
+#include <drogon/HttpAppFramework.h>
 #include <drogon/orm/DbClient.h>
 #include <drogon/orm/Exception.h>
 #include <drogon/utils/coroutine.h>
@@ -64,7 +65,7 @@ namespace efe
                 auto result = co_await getDb()->execSqlCoro(sql);
 
                 if (result.affectedRows() == 0) {
-                    LOG_WARN << '(' << entity.getClassName() << ") Nenhum registro atualizado.";
+                    LOG_WARN << '(' << entity.getClassName() << ") Nenhum registro atualizado";
                     co_return false;
                 }
 
@@ -141,7 +142,7 @@ namespace efe
     protected:
         inline drogon::orm::DbClientPtr getDb()
         {
-            return Util::getDbClient();
+            return drogon::app().getFastDbClient();
         }
 
     private:

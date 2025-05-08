@@ -14,7 +14,7 @@ namespace efe::controllers
     Task<HttpResponsePtr> AuthController::verifyToken(const HttpRequestPtr req)
     {
         auto error = JSON::checkRequest(req);
-        if (error.has_value()) co_return error.value();
+        if (!error.valid) co_return error.errorResp;
 
         auto resp = HttpResponse::newHttpResponse();
         resp->setContentTypeCode(CT_APPLICATION_JSON);
@@ -28,10 +28,11 @@ namespace efe::controllers
             co_return resp;
         }
 
-        auto result = JWT::verify(token);
+        std::string usuarioId = JWT::verify(token);
+        bool valid = !usuarioId.empty();
 
         JSON jsonResp;
-        jsonResp.value["valid"] = result.first;
+        jsonResp.value["valid"] = valid;
 
         resp->setStatusCode(k200OK);
         resp->setBody(jsonResp.toString());
@@ -41,7 +42,7 @@ namespace efe::controllers
     Task<HttpResponsePtr> AuthController::loginByUsuario(const HttpRequestPtr req)
     {
         auto error = JSON::checkRequest(req);
-        if (error.has_value()) co_return error.value();
+        if (!error.valid) co_return error.errorResp;
 
         auto resp = HttpResponse::newHttpResponse();
         resp->setContentTypeCode(CT_APPLICATION_JSON);

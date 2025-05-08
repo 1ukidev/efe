@@ -23,8 +23,8 @@ namespace efe
          * @brief Verifica se o token JWT é válido.
          * 
          * @param token
-         * @return std::pair<bool, std::string>
+         * @return std::string
          */
-        static std::pair<bool, std::string> verify(const std::string& token);
+        static std::string verify(const std::string& token);
    };
 }

@@ -5,7 +5,6 @@
 #include <drogon/HttpResponse.h>
 #include <json/value.h>
 #include <json/writer.h>
-#include <optional>
 #include <string>
 
 namespace efe
@@ -32,16 +31,22 @@ namespace efe
         }
     }
 
-    std::optional<HttpResponsePtr> JSON::checkRequest(const HttpRequestPtr& req)
+    RequestResult JSON::checkRequest(const HttpRequestPtr& req)
     {
         auto json = req->getJsonObject();
         if (!json) {
             auto resp = HttpResponse::newHttpResponse(k400BadRequest, CT_APPLICATION_JSON);
             resp->setBody(createResponse("Corpo da requisição inválido", jt::error));
-            return resp;
+            return {
+                .valid = false,
+                .errorResp = resp
+            };
         }
 
-        return std::nullopt;
+        return {
+            .valid = true,
+            .errorResp = nullptr
+        };
     }
 
     AuthorizationResult JSON::checkAuthorization(const HttpRequestPtr& req)
@@ -59,7 +64,8 @@ namespace efe
             };
         }
 
-        auto [valid, usuarioId] = JWT::verify(token);
+        std::string usuarioId = JWT::verify(token);
+        bool valid = !usuarioId.empty();
         if (!valid) {
             return {
                 .valid = false,

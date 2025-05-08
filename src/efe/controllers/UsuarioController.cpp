@@ -14,7 +14,7 @@ namespace efe::controllers
     Task<HttpResponsePtr> UsuarioController::saveUser(const HttpRequestPtr req)
     {
         auto error = JSON::checkRequest(req);
-        if (error.has_value()) co_return error.value();
+        if (!error.valid) co_return error.errorResp;
 
         // TODO: Verificar se o usuário pode salvar outro usuário
 
@@ -44,7 +44,7 @@ namespace efe::controllers
 
         // TODO: Adicionar mais validações
 
-        senha = BCrypt::generateHash(senha);
+        senha = BCrypt::generateHash(senha, 10);
 
         UsuarioEntity entity(nome, login, senha);
         bool ok = co_await dao.saveCoro(entity);

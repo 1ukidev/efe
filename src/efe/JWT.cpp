@@ -21,7 +21,7 @@ namespace efe
             .sign(jwt::algorithm::hs256{config.jwtKey});
     }
 
-    std::pair<bool, std::string> JWT::verify(const std::string& token)
+    std::string JWT::verify(const std::string& token)
     {
         auto& config = Config::getInstance();
 
@@ -41,9 +41,9 @@ namespace efe
 
             std::string sub = decoded.get_subject();
 
-            return {true, sub};
+            return sub;
         } catch (const std::exception&) {
-            return {false, ""};
+            return "";
         }
     }
 }

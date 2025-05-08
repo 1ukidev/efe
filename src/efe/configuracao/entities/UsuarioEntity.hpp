@@ -22,7 +22,7 @@ namespace efe::configuracao
         std::string getClassName() const override { return "UsuarioEntity"; }
         std::string getTable() const override { return "usuario"; }
 
-        const std::unordered_map<std::string, std::string> getColumns() const override;
+        const std::unordered_map<std::string, std::string>& getColumns() const override;
         void fromResultSet(const drogon::orm::Result& result) override;
 
         std::string toString() const override;
@@ -31,5 +31,8 @@ namespace efe::configuracao
         std::string nome;
         std::string login;
         std::string senha;
+
+    private:
+        mutable std::unordered_map<std::string, std::string> columnsCache;
     };
 }

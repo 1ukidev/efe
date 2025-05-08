@@ -1,23 +1,25 @@
 #pragma once
 
+#include "efe/Singleton.hpp"
+
 #include <drogon/orm/DbConfig.h>
 #include <string>
 #include <unordered_map>
 
 namespace efe
 {
-    class Config final
+    class Config final : public Singleton<Config>
     {
     public:
-        // Singleton
-        Config(const Config&) = delete;
-        Config& operator=(const Config&) = delete;
-        static Config& getInstance();
-
-        bool loaded = false;
-
         drogon::orm::PostgresConfig database;
         std::string jwtKey;
+
+        /**
+         * @brief Retoran true se as configurações foram carregadas.
+         *
+         * @return bool
+         */
+        bool getLoaded();
 
         /**
          * @brief Carrega as configurações do arquivo de configuração.
@@ -37,10 +39,13 @@ namespace efe
                         const std::string& default_value = "") const;
 
     private:
+        friend class Singleton<Config>;
         Config() = default;
         ~Config() = default;
 
+        bool loaded_ = false;
         std::unordered_map<std::string, std::string> config_;
+
         std::string trim(const std::string& str);
         bool pull();
     };

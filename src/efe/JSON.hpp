@@ -4,7 +4,6 @@
 #include <drogon/HttpResponse.h>
 #include <json/value.h>
 #include <json/writer.h>
-#include <optional>
 #include <string>
 
 namespace efe
@@ -14,6 +13,12 @@ namespace efe
         message = 0,
         success = 1,
         error = 2
+    };
+
+    struct RequestResult
+    {
+        bool valid;
+        drogon::HttpResponsePtr errorResp;
     };
 
     struct AuthorizationResult
@@ -52,9 +57,9 @@ namespace efe
          * @brief Verifica se o corpo da requisição é um JSON válido.
          * 
          * @param req
-         * @return <std::optional<drogon::HttpResponsePtr>
+         * @return RequestResult
          */
-        static std::optional<drogon::HttpResponsePtr> checkRequest(const drogon::HttpRequestPtr& req);
+        static RequestResult checkRequest(const drogon::HttpRequestPtr& req);
 
         /**
          * @brief Verifica se o usuário está autorizado a acessar o recurso.

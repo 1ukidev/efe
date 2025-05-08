@@ -9,11 +9,14 @@
 
 namespace efe::configuracao
 {
-    const std::unordered_map<std::string, std::string> UsuarioEntity::getColumns() const
+    const std::unordered_map<std::string, std::string>& UsuarioEntity::getColumns() const
     {
-        return {
-            {"nome", nome}, {"login", login}, {"senha", senha}
+        columnsCache = {
+            {"nome", nome},
+            {"login", login},
+            {"senha", senha}
         };
+        return columnsCache;
     }
 
     void UsuarioEntity::fromResultSet(const drogon::orm::Result& result)
