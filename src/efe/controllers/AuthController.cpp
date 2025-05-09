@@ -1,5 +1,5 @@
 #include "efe/controllers/AuthController.hpp"
-#include "bcrypt/BCrypt.hpp"
+#include "bcrypt/bcrypt.hpp"
 #include "efe/JSON.hpp"
 #include "efe/JWT.hpp"
 
@@ -64,7 +64,7 @@ namespace efe::controllers
         }
 
         auto usuario = co_await usuarioDAO.findByLogin(login);
-        bool ok = usuario.has_value() && BCrypt::validatePassword(senha, usuario->senha);
+        bool ok = usuario.has_value() && bcrypt::validatePassword(senha, usuario->senha);
 
         if (!ok) {
             resp->setStatusCode(k401Unauthorized);

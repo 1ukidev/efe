@@ -1,4 +1,4 @@
-#include "bcrypt/BCrypt.hpp"
+#include "bcrypt/bcrypt.hpp"
 #include "efe/JSON.hpp"
 #include "efe/controllers/UsuarioController.hpp"
 #include "efe/configuracao/entities/UsuarioEntity.hpp"
@@ -44,7 +44,7 @@ namespace efe::controllers
 
         // TODO: Adicionar mais validações
 
-        senha = BCrypt::generateHash(senha, 10);
+        senha = bcrypt::generateHash(senha, 10);
 
         UsuarioEntity entity(nome, login, senha);
         bool ok = co_await dao.saveCoro(entity);

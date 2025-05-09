@@ -71,6 +71,10 @@ int main(int argc, char** argv)
         LOG_ERROR << "std::terminate() chamado. Exceção não tratada?";
     });
 
+    std::atexit([]() {
+        LOG_WARN << "std::exit() chamado. Saindo...";
+    });
+
     auto startTime = std::chrono::steady_clock::now();
 
     auto& global = Global::getInstance();

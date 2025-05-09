@@ -103,9 +103,8 @@ namespace efe
         if (jwtKey.empty()) LOG_ERROR << "Configuração ausente: jwt.key";
 
         if (database.host.empty() || database.port == 0 || database.username.empty() || database.password.empty()
-                || database.databaseName.empty() || database.connectionNumber == 0 || jwtKey.empty()) {
+                || database.databaseName.empty() || database.connectionNumber == 0 || jwtKey.empty())
             return false;
-        }
 
         return true;
     }

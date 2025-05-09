@@ -32,7 +32,7 @@ namespace efe
         /**
          * @brief Retorna um mapa com os nomes das colunas e seus respectivos valores.
          * 
-         * @return const std::unordered_map<std::string, std::string>
+         * @return const std::unordered_map<std::string, std::string>&
          */
         virtual const std::unordered_map<std::string, std::string>& getColumns() const = 0;
 
