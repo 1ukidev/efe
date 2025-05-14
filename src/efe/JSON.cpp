@@ -21,13 +21,13 @@ namespace efe
     {
         switch (type) {
             case jt::message:
-                return "{\"message\":\"" + msg + "\"}\n";
+                return "{\"success\":true,{\"message\":\"" + msg + "\"}\n";
             case jt::success:
-                return "{\"success\":\"" + msg + "\"}\n";
+                return "{\"success\":true,\"message\":\"" + msg + "\"}\n";
             case jt::error:
-                return "{\"error\":\"" + msg + "\"}\n";
+                return "{\"success\":false,\"message\":\"" + msg + "\"}\n";
             default:
-                return "{\"error\":\"Tipo de resposta inválido\"}\n";
+                return "{\"success\":false,\"message\":\"Tipo de resposta inválido\"}\n";
         }
     }
 
