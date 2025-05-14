@@ -1,11 +1,13 @@
 #include "efe/Config.hpp"
-#include "efe/Util.hpp"
 
 #include <drogon/orm/DbConfig.h>
 #include <filesystem>
 #include <string>
-#include <fstream>
 #include <trantor/utils/Logger.h>
+#include <utility>
+#include <vector>
+#include <yaml-cpp/exceptions.h>
+#include <yaml-cpp/node/parse.h>
 
 namespace efe
 {
@@ -23,10 +25,10 @@ namespace efe
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
         std::string path  = std::getenv("USERPROFILE");
-        path += "\\efe.properties";
+        path += "\\efe.yaml";
 #else
         std::string path = std::getenv("HOME");
-        path += "/efe.properties";
+        path += "/efe.yaml";
 #endif
 
         if (!std::filesystem::exists(path)) {
@@ -34,25 +36,11 @@ namespace efe
             return false;
         }
 
-        std::ifstream file(path);
-        if (!file.is_open()) {
-            LOG_ERROR << "Não foi possível abrir o arquivo de configuração: " << path;
+        try {
+            config_ = YAML::LoadFile(path);
+        } catch (const YAML::Exception& e) {
+            LOG_ERROR << "Erro ao carregar o arquivo de configuração: " << e.what();
             return false;
-        }
-
-        std::string line;
-        while (std::getline(file, line)) {
-            if (line.empty() || line[0] == '#')
-                continue;
-
-            std::stringstream ss(line);
-            std::string key, value;
-
-            if (std::getline(ss, key, '=') && std::getline(ss, value)) {
-                key = trim(key);
-                value = trim(value);
-                config_[key] = value;
-            }
         }
 
         if (!pull())
@@ -63,48 +51,44 @@ namespace efe
         return true;
     }
 
-    std::string Config::get(const std::string& key, const std::string& defaultValue) const
-    {
-        auto it = config_.find(key);
-        return it != config_.end() ? it->second : defaultValue;
-    }
-
-    std::string Config::trim(const std::string& str)
-    {
-        size_t first = str.find_first_not_of(" \t\n\r");
-        size_t last = str.find_last_not_of(" \t\n\r");
-        return first == std::string::npos || last == std::string::npos ? "" : str.substr(first, last - first + 1);
-    }
-
     bool Config::pull()
     {
         database.name = "default";
         database.isFast = true;
-        database.host = get("db.host");
 
-        std::string port = get("db.port");
-        database.port = Util::isNumber(port) ? std::stoul(port) : 0;
+        const std::vector<std::pair<std::string, std::vector<std::string>>> requiredKeys = {
+            {"db", {"host", "port", "user", "password", "databaseName", "connectionNumber"}},
+            {"jwt", {"key"}}
+        };
 
-        database.username = get("db.user");
-        database.password = get("db.password");
-        database.databaseName = get("db.databaseName");
+        for (const auto& [section, keys] : requiredKeys) {
+            if (!config_[section]) {
+                LOG_ERROR << "Configuração ausente: " << section;
+                return false;
+            }
+            for (const auto& key : keys) {
+                if (!config_[section][key]) {
+                    LOG_ERROR << "Configuração ausente: " << section << "." << key;
+                    return false;
+                }
+            }
+        }
 
-        std::string connectionNumber = get("db.connectionNumber");
-        database.connectionNumber = Util::isNumber(connectionNumber) ? std::stoul(connectionNumber) : 0;
+        try {
+            const auto& db = config_["db"];
+            database.host = db["host"].as<std::string>();
+            database.port = db["port"].as<unsigned short>();
+            database.username = db["user"].as<std::string>();
+            database.password = db["password"].as<std::string>();
+            database.databaseName = db["databaseName"].as<std::string>();
+            database.connectionNumber = db["connectionNumber"].as<size_t>();
 
-        jwtKey = get("jwt.key");
-
-        if (database.host.empty()) LOG_ERROR << "Configuração ausente: db.host";
-        if (database.port == 0) LOG_ERROR << "Configuração inválida ou ausente: db.port";
-        if (database.username.empty()) LOG_ERROR << "Configuração ausente: db.user";
-        if (database.password.empty()) LOG_ERROR << "Configuração ausente: db.password";
-        if (database.databaseName.empty()) LOG_ERROR << "Configuração ausente: db.databaseName";
-        if (database.connectionNumber == 0) LOG_ERROR << "Configuração inválida ou ausente: db.connectionNumber";
-        if (jwtKey.empty()) LOG_ERROR << "Configuração ausente: jwt.key";
-
-        if (database.host.empty() || database.port == 0 || database.username.empty() || database.password.empty()
-                || database.databaseName.empty() || database.connectionNumber == 0 || jwtKey.empty())
+            const auto& jwt = config_["jwt"];
+            jwtKey = jwt["key"].as<std::string>();
+        } catch (const YAML::Exception& e) {
+            LOG_ERROR << "Erro ao tentar pegar valores da configuração: " << e.what();
             return false;
+        }
 
         return true;
     }

@@ -90,7 +90,6 @@ int main(int argc, char** argv)
 
     auto& config = Config::getInstance();
     if (!config.load()) {
-        LOG_ERROR << "Erro ao carregar arquivo de configuração. Encerrando...";
         return EXIT_FAILURE;
     }
 

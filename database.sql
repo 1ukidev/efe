@@ -1,16 +1,14 @@
 -- Script para criar o banco de dados e as tabelas necessárias.
 
-create database efe;
+CREATE DATABASE efe;
 
-\c efe
-
-create table if not exists usuario (
-    id bigserial primary key,
-    nome text not null,
-    login text not null unique,
-    senha text not null
+CREATE TABLE IF NOT EXISTS usuario (
+    id BIGSERIAL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    login TEXT NOT NULL UNIQUE,
+    senha TEXT NOT NULL
 );
 
 -- Senha: root
-insert into usuario (nome, login, senha)
-values ('Administrador', 'root', '$2a$12$K2WoajnbIlwBnXM9Wh1kOuM7poeOwSEI4jkzzjLGS8sIVPr2sw0hu');
+INSERT INTO usuario (nome, login, senha)
+VALUES ('Administrador', 'root', '$2a$12$K2WoajnbIlwBnXM9Wh1kOuM7poeOwSEI4jkzzjLGS8sIVPr2sw0hu');

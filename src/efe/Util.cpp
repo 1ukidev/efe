@@ -1,18 +1,15 @@
 #include "efe/Util.hpp"
-#include "efe/Config.hpp"
 
-#include <algorithm>
-#include <drogon/HttpAppFramework.h>
-#include <drogon/HttpTypes.h>
-#include <drogon/orm/DbClient.h>
+#include <charconv>
 #include <string_view>
+#include <system_error>
 
 namespace efe
 {
-    using namespace drogon;
-
     bool Util::isNumber(std::string_view str)
     {
-        return !str.empty() && std::all_of(str.begin(), str.end(), ::isdigit);
+        double d;
+        auto result = std::from_chars(str.data(), str.data() + str.size(), d);
+        return result.ec == std::errc() && result.ptr == str.data() + str.size();
     }
 }
