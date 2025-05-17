@@ -13,8 +13,10 @@ namespace efe::controllers
 {
     Task<HttpResponsePtr> UsuarioController::saveUser(const HttpRequestPtr req)
     {
-        auto error = JSON::checkRequest(req);
-        if (!error.valid) co_return error.errorResp;
+        auto check = JSON::checkRequest(req);
+        if (!check.valid) co_return check.errorResp;
+
+        auto* dao = app().getPlugin<UsuarioDAO>();
 
         // TODO: Verificar se o usuário pode salvar outro usuário
 
@@ -47,7 +49,7 @@ namespace efe::controllers
         senha = bcrypt::generateHash(senha, 10);
 
         UsuarioEntity entity(nome, login, senha);
-        bool ok = co_await dao.saveCoro(entity);
+        bool ok = co_await dao->saveCoro(entity);
 
         resp->setStatusCode(ok ? k201Created : k500InternalServerError);
         resp->setBody(JSON::createResponse(

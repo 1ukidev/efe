@@ -4,7 +4,6 @@
 
 #include <drogon/orm/DbConfig.h>
 #include <string>
-#include <unordered_map>
 #include <yaml-cpp/yaml.h>
 
 namespace efe

@@ -19,7 +19,7 @@ namespace efe
     bool Config::load()
     {
         if (loaded_) {
-            LOG_INFO << "Configurações já estão carregadas.";
+            LOG_INFO << "Configurações já estão carregadas";
             return true;
         }
 
@@ -68,7 +68,7 @@ namespace efe
             }
             for (const auto& key : keys) {
                 if (!config_[section][key]) {
-                    LOG_ERROR << "Configuração ausente: " << section << "." << key;
+                    LOG_ERROR << "Configuração ausente: " << section << '.' << key;
                     return false;
                 }
             }

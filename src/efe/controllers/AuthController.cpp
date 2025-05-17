@@ -13,8 +13,8 @@ namespace efe::controllers
 {
     Task<HttpResponsePtr> AuthController::verifyToken(const HttpRequestPtr req)
     {
-        auto error = JSON::checkRequest(req);
-        if (!error.valid) co_return error.errorResp;
+        auto check = JSON::checkRequest(req);
+        if (!check.valid) co_return check.errorResp;
 
         auto resp = HttpResponse::newHttpResponse();
         resp->setContentTypeCode(CT_APPLICATION_JSON);
@@ -34,15 +34,17 @@ namespace efe::controllers
         JSON jsonResp;
         jsonResp.value["valid"] = valid;
 
-        resp->setStatusCode(k200OK);
+        resp->setStatusCode(valid ? k200OK : k401Unauthorized);
         resp->setBody(jsonResp.toString());
         co_return resp;
     }
 
     Task<HttpResponsePtr> AuthController::loginByUsuario(const HttpRequestPtr req)
     {
-        auto error = JSON::checkRequest(req);
-        if (!error.valid) co_return error.errorResp;
+        auto check = JSON::checkRequest(req);
+        if (!check.valid) co_return check.errorResp;
+
+        auto* usuarioDAO = app().getPlugin<UsuarioDAO>();
 
         auto resp = HttpResponse::newHttpResponse();
         resp->setContentTypeCode(CT_APPLICATION_JSON);
@@ -63,7 +65,7 @@ namespace efe::controllers
             co_return resp;
         }
 
-        auto usuario = co_await usuarioDAO.findByLogin(login);
+        auto usuario = co_await usuarioDAO->findByLogin(login);
         bool ok = usuario.has_value() && bcrypt::validatePassword(senha, usuario->senha);
 
         if (!ok) {

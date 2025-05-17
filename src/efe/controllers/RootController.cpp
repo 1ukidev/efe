@@ -31,7 +31,8 @@ namespace efe::controllers
         std::string rotas = "<h3>Rotas disponíveis:</h3>\n    <ul>";
         std::vector<HttpHandlerInfo> handlers = app().getHandlersInfo();
         for (const auto& handler : handlers) {
-            rotas += "\n        <li>" + std::get<0>(handler) + " - " + std::get<2>(handler) + "</li>";
+            rotas += "\n        <li><b>Caminho:</b> " + std::get<0>(handler)
+                  + " <b>(" + std::get<2>(handler) + ")</b></li>";
         }
         rotas += "\n    </ul>";
 

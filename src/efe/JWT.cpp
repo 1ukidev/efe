@@ -5,11 +5,10 @@
 #include <cstdint>
 #include <string>
 #include <jwt-cpp/jwt.h>
-#include <utility>
 
 namespace efe
 {
-    std::string JWT::generate(std::uint64_t usuarioId)
+    std::string JWT::generate(std::int64_t usuarioId)
     {
         auto& config = Config::getInstance();
 

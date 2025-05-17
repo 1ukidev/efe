@@ -22,10 +22,18 @@ namespace efe::configuracao
     void UsuarioEntity::fromResultSet(const drogon::orm::Result& result)
     {
         if (!result.empty()) {
-            id = result[0]["id"].as<std::uint64_t>();
-            nome = result[0]["nome"].as<std::string>();
-            login = result[0]["login"].as<std::string>();
-            senha = result[0]["senha"].as<std::string>();
+            if (!result[0]["id"].isNull()) {
+                id = result[0]["id"].as<std::int64_t>();
+            }
+            if (!result[0]["nome"].isNull()) {
+                nome = result[0]["nome"].as<std::string>();
+            }
+            if (!result[0]["login"].isNull()) {
+                login = result[0]["login"].as<std::string>();
+            }
+            if (!result[0]["senha"].isNull()) {
+                senha = result[0]["senha"].as<std::string>();
+            }
         }
     }
 

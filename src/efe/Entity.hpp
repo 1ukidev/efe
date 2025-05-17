@@ -65,6 +65,6 @@ namespace efe
          */
         virtual JSON toJSON() const = 0;
 
-        std::uint64_t id{};
+        std::int64_t id{};
     };
 }

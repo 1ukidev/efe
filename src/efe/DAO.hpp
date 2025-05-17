@@ -38,7 +38,7 @@ namespace efe
                 std::string sql = buildInsertQuery(entity);
                 auto result = co_await getDb()->execSqlCoro(sql);
 
-                entity.id = result[0]["id"].template as<std::uint64_t>();
+                entity.id = result[0]["id"].template as<std::int64_t>();
 
                 LOG_DEBUG << '(' << entity.getClassName() << ") Nova entidade salva com id "
                           << entity.id;
@@ -84,7 +84,7 @@ namespace efe
          * @param id
          * @return std::optional<T>
          */
-        virtual drogon::Task<std::optional<T>> findByIdCoro(std::uint64_t id)
+        virtual drogon::Task<std::optional<T>> findByIdCoro(std::int64_t id)
         {
             T entity;
             LOG_DEBUG << '(' << entity.getClassName() << ") Buscando entidade com id " << id << "...";

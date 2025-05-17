@@ -22,8 +22,5 @@ namespace efe::controllers
 
         Task<HttpResponsePtr> verifyToken(const HttpRequestPtr req);
         Task<HttpResponsePtr> loginByUsuario(const HttpRequestPtr req);
-
-    private:
-        UsuarioDAO usuarioDAO;
     };
 }
