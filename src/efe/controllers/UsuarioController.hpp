@@ -21,8 +21,5 @@ namespace efe::controllers
         METHOD_LIST_END
 
         Task<HttpResponsePtr> saveUser(const HttpRequestPtr req);
-
-    private:
-        UsuarioDAO dao;
     };
 }

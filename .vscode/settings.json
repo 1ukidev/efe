@@ -1,5 +1,8 @@
 {
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
-    "cmake.buildDirectory": "${workspaceFolder}/build"
+    "cmake.buildDirectory": "${workspaceFolder}/vscode-build",
+    "clangd.arguments": [
+        "--compile-commands-dir=${workspaceFolder}/vscode-build"
+    ]
 }

@@ -10,9 +10,8 @@ namespace efe
 {
     enum class jt
     {
-        message = 0,
-        success = 1,
-        error = 2
+        success = 0,
+        error = 1
     };
 
     struct RequestResult
@@ -51,7 +50,7 @@ namespace efe
          * @return std::string
          */
         static std::string createResponse(const std::string& msg,
-                                          const jt type = jt::message);
+                                          const jt type = jt::success);
 
         /**
          * @brief Verifica se o corpo da requisição é um JSON válido.

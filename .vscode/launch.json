@@ -5,8 +5,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Start server (lldb)",
-            "program": "${workspaceFolder}/build/efe",
-            "args": ["-d"],
+            "program": "${workspaceFolder}/vscode-build/efe",
             "cwd": "${workspaceFolder}"
         }
     ]

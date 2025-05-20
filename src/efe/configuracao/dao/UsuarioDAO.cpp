@@ -11,7 +11,7 @@ namespace efe::configuracao
     Task<std::optional<UsuarioEntity>> UsuarioDAO::findByLogin(const std::string& login)
     {
         std::string where = "login = '" + login + "'";
-        auto result = co_await findOne(where);
+        auto result = co_await findOneCoro(where);
 
         if (result.has_value()) {
             co_return result.value();

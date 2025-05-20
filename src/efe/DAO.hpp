@@ -24,6 +24,8 @@ namespace efe
     public:
         virtual ~DAO() = default;
 
+        // TODO: Melhorar implementação, a atual está suscetível a SQL injection
+
         /**
          * @brief Salva a entidade no banco de dados.
          * 
@@ -38,7 +40,7 @@ namespace efe
                 std::string sql = buildInsertQuery(entity);
                 auto result = co_await getDb()->execSqlCoro(sql);
 
-                entity.id = result[0]["id"].template as<std::uint64_t>();
+                entity.id = result[0]["id"].template as<std::int64_t>();
 
                 LOG_DEBUG << '(' << entity.getClassName() << ") Nova entidade salva com id "
                           << entity.id;
@@ -84,13 +86,13 @@ namespace efe
          * @param id
          * @return std::optional<T>
          */
-        virtual drogon::Task<std::optional<T>> findByIdCoro(std::uint64_t id)
+        virtual drogon::Task<std::optional<T>> findByIdCoro(std::int64_t id)
         {
             T entity;
             LOG_DEBUG << '(' << entity.getClassName() << ") Buscando entidade com id " << id << "...";
 
             try {
-                std::string sql = "SELECT * FROM " + T().getTable() + " WHERE id = $1;";
+                std::string sql = "SELECT * FROM " + entity.getTable() + " WHERE id = $1;";
                 auto result = co_await getDb()->execSqlCoro(sql, id);
 
                 if (result.size() == 0) {
@@ -114,18 +116,22 @@ namespace efe
          * @param where
          * @return std::optional<T>
          */
-        virtual drogon::Task<std::optional<T>> findOne(const std::string& where)
+        virtual drogon::Task<std::optional<T>> findOneCoro(const std::string& where)
         {
             T entity;
             LOG_DEBUG << '(' << entity.getClassName() << ") Buscando entidade com " << where
                       << "...";
 
             try {
-                std::string sql = "SELECT * FROM " + T().getTable() + " WHERE " + where + ';';
+                std::string sql = "SELECT * FROM " + entity.getTable() + " WHERE " + where + ';';
                 auto result = co_await getDb()->execSqlCoro(sql);
 
                 if (result.size() == 0) {
                     LOG_WARN << '(' << entity.getClassName() << ") Nenhum registro encontrado para "
+                             << where;
+                    co_return std::nullopt;
+                } else if (result.size() > 1) {
+                    LOG_WARN << '(' << entity.getClassName() << ") Mais de um registro encontrado para "
                              << where;
                     co_return std::nullopt;
                 }
@@ -138,6 +144,8 @@ namespace efe
                 co_return std::nullopt;
             }
         }
+
+        // TODO: Implementar mais métodos
 
     protected:
         inline drogon::orm::DbClientPtr getDb()

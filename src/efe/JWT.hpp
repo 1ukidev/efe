@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <string>
-#include <utility>
 
 namespace efe
 {
@@ -17,7 +16,7 @@ namespace efe
          * @param usuarioId
          * @return std::string
          */
-        static std::string generate(std::uint64_t usuarioId);
+        static std::string generate(std::int64_t usuarioId);
 
         /**
          * @brief Verifica se o token JWT é válido.

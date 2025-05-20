@@ -14,6 +14,7 @@
 #include <trantor/utils/Logger.h>
 
 using namespace drogon;
+using namespace trantor;
 using namespace efe;
 namespace po = boost::program_options;
 
@@ -44,9 +45,8 @@ int main(int argc, char** argv)
         ("help,h", "Mostra essa mensagem de ajuda")
         ("version,v", "Exibe a versão do servidor")
         ("url,u", po::value<std::string>()->default_value("0.0.0.0"), "URL do servidor")
-        ("port,p", po::value<unsigned short>()->default_value(9999), "Porta do servidor")
-        ("threads,t", po::value<unsigned short>()->default_value(threadsCount), "Número de threads")
-        ("debug,d", po::bool_switch()->default_value(false), "Exibe mensagens de debug");
+        ("port,p", po::value<short>()->default_value(9999), "Porta do servidor")
+        ("threads,t", po::value<short>()->default_value(threadsCount), "Número de threads");
 
     po::variables_map vm;
 
@@ -68,7 +68,20 @@ int main(int argc, char** argv)
 
     std::set_terminate([]() {
         LOG_ERROR << "Ops...";
-        LOG_ERROR << "std::terminate() chamado. Exceção não tratada?";
+        LOG_ERROR << "std::terminate() chamado";
+
+        auto ex = std::current_exception();
+        if (ex) {
+            try {
+                std::rethrow_exception(ex);
+            } catch (const std::exception& e) {
+                LOG_ERROR << "Exceção não capturada: " << e.what() << '\n';
+            } catch (...) {
+                LOG_ERROR << "Exceção desconhecida\n";
+            }
+        } else {
+            LOG_ERROR << "std::terminate sem exceção ativa\n";
+        }
     });
 
     std::atexit([]() {
@@ -81,11 +94,12 @@ int main(int argc, char** argv)
     global.startTime = startTime;
 
     auto url = vm["url"].as<std::string>();
-    auto port = vm["port"].as<unsigned short>();
-    auto threads = vm["threads"].as<unsigned short>();
-    auto debug = vm["debug"].as<bool>();
+    auto port = vm["port"].as<short>();
+    auto threads = vm["threads"].as<short>();
 
-    std::cout << "\033[H\033[2J" << std::flush;
+    if (threads <= 0) threads = threadsCount;
+    if (port <= 0) port = 9999;
+
     std::cout << art << '\n';
 
     auto& config = Config::getInstance();
@@ -103,8 +117,8 @@ int main(int argc, char** argv)
 
     app().setExceptionHandler(exceptionHandler)
          .addDbClient(config.database)
-         .setLogPath("", "", 100000000, 0, false)
-         .setLogLevel(debug ? trantor::Logger::kDebug : trantor::Logger::kInfo)
+         .setLogPath("", "", 100000000, 0, true)
+         .setLogLevel(Logger::kDebug)
          .addListener(url, port)
          .setThreadNum(threads)
          .enableGzip(false)

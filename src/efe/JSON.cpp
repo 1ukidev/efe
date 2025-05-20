@@ -1,5 +1,5 @@
-#include "JSON.hpp"
 #include "efe/JWT.hpp"
+#include "JSON.hpp"
 
 #include <drogon/HttpRequest.h>
 #include <drogon/HttpResponse.h>
@@ -20,8 +20,6 @@ namespace efe
     std::string JSON::createResponse(const std::string& msg, const jt type)
     {
         switch (type) {
-            case jt::message:
-                return "{\"success\":true,{\"message\":\"" + msg + "\"}\n";
             case jt::success:
                 return "{\"success\":true,\"message\":\"" + msg + "\"}\n";
             case jt::error:
