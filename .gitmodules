@@ -1,3 +1,6 @@
-[submodule "lib/libbcrypt"]
-	path = lib/libbcrypt
+[submodule "external/libbcrypt"]
+	path = external/libbcrypt
 	url = https://github.com/1ukidev/libbcrypt
+[submodule "external/drogon"]
+	path = external/drogon
+	url = https://github.com/1ukidev/drogon

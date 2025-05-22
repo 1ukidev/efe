@@ -38,8 +38,6 @@ foreach(csp_file ${CSP_LIST})
     list(APPEND VIEW_SOURCES ${cc_file})
 endforeach()
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/libbcrypt)
-
 add_executable(
     efe
     ${PROJECT_SOURCES}
@@ -50,7 +48,6 @@ target_include_directories(
     efe PRIVATE
     ${SRC_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/resources
-    ${CMAKE_CURRENT_SOURCE_DIR}/lib/libbcrypt/include
     ${VIEWS_OUTPUT_DIR}
 )
 

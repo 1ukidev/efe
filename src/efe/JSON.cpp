@@ -49,7 +49,7 @@ namespace efe
 
     AuthorizationResult JSON::checkAuthorization(const HttpRequestPtr& req)
     {
-        auto token = req->getHeader("Authorization");
+        std::string token = req->getHeader("Authorization");
         if (token.empty()) {
             return {
                 .valid = false,

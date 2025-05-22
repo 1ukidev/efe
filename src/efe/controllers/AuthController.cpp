@@ -1,8 +1,8 @@
 #include "efe/controllers/AuthController.hpp"
-#include "bcrypt/bcrypt.hpp"
 #include "efe/JSON.hpp"
 #include "efe/JWT.hpp"
 
+#include <bcrypt/bcrypt.hpp>
 #include <drogon/HttpRequest.h>
 #include <drogon/HttpResponse.h>
 #include <drogon/HttpTypes.h>
