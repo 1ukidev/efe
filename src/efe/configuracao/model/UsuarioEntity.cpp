@@ -1,4 +1,4 @@
-#include "efe/configuracao/entities/UsuarioEntity.hpp"
+#include "efe/configuracao/model/UsuarioEntity.hpp"
 #include "efe/JSON.hpp"
 
 #include <cstdint>
@@ -22,18 +22,17 @@ namespace efe::configuracao
     void UsuarioEntity::fromResultSet(const drogon::orm::Result& result)
     {
         if (!result.empty()) {
-            if (!result[0]["id"].isNull()) {
+            if (!result[0]["id"].isNull())
                 id = result[0]["id"].as<std::int64_t>();
-            }
-            if (!result[0]["nome"].isNull()) {
+
+            if (!result[0]["nome"].isNull())
                 nome = result[0]["nome"].as<std::string>();
-            }
-            if (!result[0]["login"].isNull()) {
+
+            if (!result[0]["login"].isNull())
                 login = result[0]["login"].as<std::string>();
-            }
-            if (!result[0]["senha"].isNull()) {
+
+            if (!result[0]["senha"].isNull())
                 senha = result[0]["senha"].as<std::string>();
-            }
         }
     }
 
@@ -41,7 +40,7 @@ namespace efe::configuracao
     {
         return "UsuarioEntity[id=" + std::to_string(id) +
                ", nome=" + nome +
-               ", login=" + login + "]";
+               ", login=" + login + ']';
     }
 
     JSON UsuarioEntity::toJSON() const

@@ -33,20 +33,15 @@ namespace efe
          */
         virtual drogon::Task<bool> saveCoro(T& entity)
         {
-            LOG_DEBUG << '(' << entity.getClassName() << ") Salvando entidade...";
-
             try {
                 auto [sql, values] = buildInsertQuery(entity);
                 auto result = co_await getDb()->execSqlCoro(sql, values);
 
                 entity.id = result[0]["id"].template as<std::int64_t>();
 
-                LOG_DEBUG << '(' << entity.getClassName() << ") Nova entidade salva com id "
-                          << entity.id;
                 co_return true;
             } catch (const drogon::orm::DrogonDbException& e) {
-                LOG_ERROR << '(' << entity.getClassName() << ") Erro ao salvar entidade: "
-                          << e.base().what();
+                LOG_ERROR << e.base().what();
                 co_return false;
             }
         }
@@ -59,22 +54,16 @@ namespace efe
          */
         virtual drogon::Task<bool> updateCoro(T& entity)
         {
-            LOG_DEBUG << '(' << entity.getClassName() << ") Atualizando entidade...";
-
             try {
                 auto [sql, values] = buildUpdateQuery(entity);
                 auto result = co_await getDb()->execSqlCoro(sql, values);
 
-                if (result.affectedRows() == 0) {
-                    LOG_WARN << '(' << entity.getClassName() << ") Nenhum registro atualizado";
+                if (result.affectedRows() == 0)
                     co_return false;
-                }
 
-                LOG_DEBUG << '(' << entity.getClassName() << ") Entidade atualizada com sucesso.";
                 co_return true;
             } catch (const drogon::orm::DrogonDbException& e) {
-                LOG_ERROR << '(' << entity.getClassName() << ") Erro ao atualizar entidade: "
-                          << e.base().what();
+                LOG_ERROR << e.base().what();
                 co_return false;
             }
         }
@@ -88,58 +77,18 @@ namespace efe
         virtual drogon::Task<std::optional<T>> findByIdCoro(std::int64_t id)
         {
             T entity;
-            LOG_DEBUG << '(' << entity.getClassName() << ") Buscando entidade com id " << id << "...";
 
             try {
                 std::string sql = "SELECT * FROM " + entity.getTable() + " WHERE id = $1;";
                 auto result = co_await getDb()->execSqlCoro(sql, id);
 
-                if (result.size() == 0) {
-                    LOG_WARN << '(' << entity.getClassName() << ") Nenhum registro encontrado para o id "
-                             << id;
+                if (result.size() == 0)
                     co_return std::nullopt;
-                }
 
                 entity.fromResultSet(result);
                 co_return entity;
             } catch (const drogon::orm::DrogonDbException& e) {
-                LOG_ERROR << '(' << entity.getClassName() << ") Erro ao buscar entidade com id " << id
-                          << ": " << e.base().what();
-                co_return std::nullopt;
-            }
-        }
-
-        /**
-         * @brief Busca uma entidade pelo where.
-         * 
-         * @param where
-         * @return std::optional<T>
-         */
-        virtual drogon::Task<std::optional<T>> findOneCoro(const std::string& where)
-        {
-            T entity;
-            LOG_DEBUG << '(' << entity.getClassName() << ") Buscando entidade com '" << where
-                      << "'...";
-
-            try {
-                std::string sql = "SELECT * FROM " + entity.getTable() + " WHERE " + where + ';';
-                auto result = co_await getDb()->execSqlCoro(sql);
-
-                if (result.size() == 0) {
-                    LOG_WARN << '(' << entity.getClassName() << ") Nenhum registro encontrado para '"
-                             << where << "'";
-                    co_return std::nullopt;
-                } else if (result.size() > 1) {
-                    LOG_WARN << '(' << entity.getClassName() << ") Mais de um registro encontrado para '"
-                             << where << "'";
-                    co_return std::nullopt;
-                }
-
-                entity.fromResultSet(result);
-                co_return entity;
-            } catch (const drogon::orm::DrogonDbException& e) {
-                LOG_ERROR << '(' << entity.getClassName() << ") Erro ao buscar entidade com '"
-                          << where << "': " << e.base().what();
+                LOG_ERROR << e.base().what();
                 co_return std::nullopt;
             }
         }
@@ -175,9 +124,8 @@ namespace efe
             }
 
             std::vector<std::string> values;
-            for (const auto& [_, value] : columns) {
+            for (const auto& [_, value] : columns)
                 values.push_back(value);
-            }
 
             sql += ") RETURNING id;";
             return {sql, values};

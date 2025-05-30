@@ -8,14 +8,14 @@
 
 namespace efe
 {
-    std::string JWT::generate(std::int64_t usuarioId)
+    std::string JWT::generate(std::int64_t id)
     {
         auto& config = Config::getInstance();
 
         return jwt::create()
             .set_type("JWT")
             .set_issuer("efe")
-            .set_subject(std::to_string(usuarioId))
+            .set_subject(std::to_string(id))
             .set_issued_at(std::chrono::system_clock::now())
             .sign(jwt::algorithm::hs256{config.jwtKey});
     }

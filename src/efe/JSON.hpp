@@ -14,13 +14,13 @@ namespace efe
         error = 1
     };
 
-    struct RequestResult
+    struct RequestResult final
     {
         bool valid;
         drogon::HttpResponsePtr errorResp;
     };
 
-    struct AuthorizationResult
+    struct AuthorizationResult final
     {
         bool valid;
         drogon::HttpResponsePtr errorResp;

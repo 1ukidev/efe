@@ -16,10 +16,12 @@ namespace efe::controllers
     class UsuarioController final : public HttpController<UsuarioController>
     {
     public:
+        using Callback = std::function<void(const HttpResponsePtr&)>;
+
         METHOD_LIST_BEGIN
             METHOD_ADD(UsuarioController::saveUser, "", Post);
         METHOD_LIST_END
 
-        Task<HttpResponsePtr> saveUser(const HttpRequestPtr req);
+        Task<> saveUser(const HttpRequestPtr req, Callback callback);
     };
 }

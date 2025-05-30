@@ -1,3 +1,6 @@
+// Copyright (c) 1ukidev <leo.monteiro06@live.com>. Licensed under the MIT Licence.
+// See the LICENCE file in the repository root for full licence text.
+
 #include "efe/Config.hpp"
 #include "efe/Constants.hpp"
 #include "efe/Global.hpp"
@@ -75,12 +78,12 @@ int main(int argc, char** argv)
             try {
                 std::rethrow_exception(ex);
             } catch (const std::exception& e) {
-                LOG_ERROR << "Exceção não capturada: " << e.what() << '\n';
+                LOG_ERROR << "Exceção não capturada: " << e.what();
             } catch (...) {
-                LOG_ERROR << "Exceção desconhecida\n";
+                LOG_ERROR << "Exceção desconhecida";
             }
         } else {
-            LOG_ERROR << "std::terminate sem exceção ativa\n";
+            LOG_ERROR << "std::terminate sem exceção ativa";
         }
     });
 
@@ -121,7 +124,7 @@ int main(int argc, char** argv)
          .setLogLevel(Logger::kDebug)
          .addListener(url, port)
          .setThreadNum(threads)
-         .enableGzip(false)
+         .enableGzip(true)
          .enableBrotli(true)
          .run();
 }

@@ -15,8 +15,7 @@ namespace efe::configuracao
         UsuarioEntity() = default;
         ~UsuarioEntity() = default;
 
-        UsuarioEntity(const std::string& nome, const std::string& login,
-                      const std::string& senha)
+        UsuarioEntity(const std::string& nome, const std::string& login, const std::string& senha)
             : nome(nome), login(login), senha(senha) {}
 
         std::string getClassName() const override { return "UsuarioEntity"; }

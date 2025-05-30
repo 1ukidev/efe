@@ -15,12 +15,14 @@ namespace efe::controllers
     class AuthController final : public HttpController<AuthController>
     {
     public:
+        using Callback = std::function<void(const HttpResponsePtr&)>;
+
         METHOD_LIST_BEGIN
             METHOD_ADD(AuthController::verifyToken, "/verifyToken", Post);
             METHOD_ADD(AuthController::loginByUsuario, "/loginByUsuario", Post);
         METHOD_LIST_END
 
-        Task<HttpResponsePtr> verifyToken(const HttpRequestPtr req);
-        Task<HttpResponsePtr> loginByUsuario(const HttpRequestPtr req);
+        Task<> verifyToken(const HttpRequestPtr req, Callback callback);
+        Task<> loginByUsuario(const HttpRequestPtr req, Callback callback);
     };
 }

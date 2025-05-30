@@ -10,12 +10,18 @@ namespace efe::configuracao
 
     Task<std::optional<UsuarioEntity>> UsuarioDAO::findByLogin(const std::string& login)
     {
-        std::string where = "login = '" + login + "'";
-        auto result = co_await findOneCoro(where);
+        try {
+            std::string sql = "SELECT * FROM usuario WHERE login = $1;";
+            auto result = co_await getDb()->execSqlCoro(sql, login);
 
-        if (result.has_value()) {
-            co_return result.value();
-        } else {
+            if (result.size() == 0)
+                co_return std::nullopt;
+
+            UsuarioEntity usuario;
+            usuario.fromResultSet(result);
+            co_return usuario;
+        } catch (const drogon::orm::DrogonDbException& e) {
+            LOG_ERROR << e.base().what();
             co_return std::nullopt;
         }
     }

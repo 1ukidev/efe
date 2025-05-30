@@ -1,6 +1,6 @@
 #include "efe/JSON.hpp"
 #include "efe/controllers/UsuarioController.hpp"
-#include "efe/configuracao/entities/UsuarioEntity.hpp"
+#include "efe/configuracao/model/UsuarioEntity.hpp"
 
 #include <bcrypt/bcrypt.hpp>
 #include <drogon/HttpRequest.h>
@@ -11,10 +11,13 @@
 
 namespace efe::controllers
 {
-    Task<HttpResponsePtr> UsuarioController::saveUser(const HttpRequestPtr req)
+    Task<> UsuarioController::saveUser(const HttpRequestPtr req, Callback callback)
     {
         auto check = JSON::checkRequest(req);
-        if (!check.valid) co_return check.errorResp;
+        if (!check.valid) {
+            callback(check.errorResp);
+            co_return;
+        }
 
         auto* dao = app().getPlugin<UsuarioDAO>();
 
@@ -41,7 +44,8 @@ namespace efe::controllers
             std::string msg = "Campo(s) obrigatórios ausentes: " + faltando;
             resp->setStatusCode(k400BadRequest);
             resp->setBody(JSON::createResponse(msg, jt::error));
-            co_return resp;
+            callback(resp);
+            co_return;
         }
 
         // TODO: Adicionar mais validações
@@ -56,6 +60,7 @@ namespace efe::controllers
             ok ? "Salvo com sucesso" : "Erro interno ao salvar usuário",
             ok ? jt::success : jt::error
         ));
-        co_return resp;
+        callback(resp);
+        co_return;
     }
 }

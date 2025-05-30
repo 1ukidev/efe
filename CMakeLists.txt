@@ -48,7 +48,6 @@ target_include_directories(
     efe PRIVATE
     ${SRC_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/resources
-    ${VIEWS_OUTPUT_DIR}
 )
 
 set(Boost_USE_STATIC_LIBS OFF)

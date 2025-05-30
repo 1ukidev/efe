@@ -11,10 +11,13 @@
 
 namespace efe::controllers
 {
-    Task<HttpResponsePtr> AuthController::verifyToken(const HttpRequestPtr req)
+    Task<> AuthController::verifyToken(const HttpRequestPtr req, Callback callback)
     {
         auto check = JSON::checkRequest(req);
-        if (!check.valid) co_return check.errorResp;
+        if (!check.valid) {
+            callback(check.errorResp);
+            co_return;
+        }
 
         auto resp = HttpResponse::newHttpResponse();
         resp->setContentTypeCode(CT_APPLICATION_JSON);
@@ -25,7 +28,8 @@ namespace efe::controllers
         if (token.empty()) {
             resp->setStatusCode(k400BadRequest);
             resp->setBody(JSON::createResponse("Token é obrigatório", jt::error));
-            co_return resp;
+            callback(resp);
+            co_return;
         }
 
         std::string usuarioId = JWT::verify(token);
@@ -36,13 +40,17 @@ namespace efe::controllers
 
         resp->setStatusCode(valid ? k200OK : k401Unauthorized);
         resp->setBody(jsonResp.toString());
-        co_return resp;
+        callback(resp);
+        co_return;
     }
 
-    Task<HttpResponsePtr> AuthController::loginByUsuario(const HttpRequestPtr req)
+    Task<> AuthController::loginByUsuario(const HttpRequestPtr req, Callback callback)
     {
         auto check = JSON::checkRequest(req);
-        if (!check.valid) co_return check.errorResp;
+        if (!check.valid) {
+            callback(check.errorResp);
+            co_return;
+        }
 
         auto* usuarioDAO = app().getPlugin<UsuarioDAO>();
 
@@ -62,7 +70,8 @@ namespace efe::controllers
             std::string msg = "Campo(s) obrigatórios ausentes: " + faltando;
             resp->setStatusCode(k400BadRequest);
             resp->setBody(JSON::createResponse(msg, jt::error));
-            co_return resp;
+            callback(resp);
+            co_return;
         }
 
         auto usuario = co_await usuarioDAO->findByLogin(login);
@@ -71,7 +80,8 @@ namespace efe::controllers
         if (!ok) {
             resp->setStatusCode(k401Unauthorized);
             resp->setBody(JSON::createResponse("Login ou senha inválidos", jt::error));
-            co_return resp;
+            callback(resp);
+            co_return;
         }
 
         std::string jwt = JWT::generate(usuario->id);
@@ -81,6 +91,7 @@ namespace efe::controllers
 
         resp->setStatusCode(k200OK);
         resp->setBody(jsonResp.toString());
-        co_return resp;
+        callback(resp);
+        co_return;
     }
 }

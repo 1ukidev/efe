@@ -13,8 +13,8 @@ namespace efe
 
     std::string JSON::toString() const
     {
-        Json::FastWriter writer;
-        return writer.write(value);
+        Json::StreamWriterBuilder builder;
+        return Json::writeString(builder, value);
     }
 
     std::string JSON::createResponse(const std::string& msg, const jt type)

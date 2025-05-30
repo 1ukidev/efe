@@ -1,7 +1,7 @@
 #pragma once
 
 #include "efe/DAO.hpp"
-#include "efe/configuracao/entities/UsuarioEntity.hpp"
+#include "efe/configuracao/model/UsuarioEntity.hpp"
 
 #include <drogon/plugins/Plugin.h>
 #include <drogon/utils/coroutine.h>
