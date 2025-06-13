@@ -3,7 +3,6 @@
 #include <drogon/HttpRequest.h>
 #include <drogon/HttpResponse.h>
 #include <json/value.h>
-#include <json/writer.h>
 #include <string>
 
 namespace efe
@@ -36,7 +35,7 @@ namespace efe
         Json::Value value{Json::objectValue};
 
         /**
-         * @brief Converte o JSON para string.
+         * @brief Retorna uma representação em string do JSON.
          * 
          * @return std::string
          */

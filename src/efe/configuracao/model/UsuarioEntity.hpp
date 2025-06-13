@@ -3,7 +3,7 @@
 #include "efe/Entity.hpp"
 #include "efe/JSON.hpp"
 
-#include <drogon/orm/Result.h>
+#include <drogon/orm/Row.h>
 #include <string>
 #include <unordered_map>
 
@@ -22,7 +22,7 @@ namespace efe::configuracao
         std::string getTable() const override { return "usuario"; }
 
         const std::unordered_map<std::string, std::string>& getColumns() const override;
-        void fromResultSet(const drogon::orm::Result& result) override;
+        void fromRowSet(const drogon::orm::Row& result) override;
 
         std::string toString() const override;
         JSON toJSON() const override;

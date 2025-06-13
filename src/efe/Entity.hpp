@@ -3,7 +3,7 @@
 #include "efe/JSON.hpp"
 
 #include <cstdint>
-#include <drogon/orm/Result.h>
+#include <drogon/orm/Row.h>
 #include <json/value.h>
 #include <string>
 #include <unordered_map>
@@ -39,10 +39,10 @@ namespace efe
         /**
          * @brief Preenche a entidade com os valores do resultado de uma consulta.
          * 
-         * @param result
+         * @param row
          * @return void
          */
-        virtual void fromResultSet(const drogon::orm::Result& result) = 0;
+        virtual void fromRowSet(const drogon::orm::Row& row) = 0;
 
         /**
          * @brief Carrega as relações da entidade.

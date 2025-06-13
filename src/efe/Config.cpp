@@ -4,7 +4,6 @@
 #include <filesystem>
 #include <string>
 #include <trantor/utils/Logger.h>
-#include <utility>
 #include <vector>
 #include <yaml-cpp/exceptions.h>
 #include <yaml-cpp/node/parse.h>
@@ -56,7 +55,7 @@ namespace efe
         database.name = "default";
         database.isFast = true;
 
-        const std::vector<std::pair<std::string, std::vector<std::string>>> requiredKeys = {
+        const std::unordered_map<std::string, std::vector<std::string>> requiredKeys = {
             {"db", {"host", "port", "user", "password", "databaseName", "connectionNumber"}},
             {"jwt", {"key"}}
         };
