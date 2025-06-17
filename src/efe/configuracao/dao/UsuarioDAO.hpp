@@ -5,6 +5,7 @@
 
 #include <drogon/plugins/Plugin.h>
 #include <drogon/utils/coroutine.h>
+#include <json/value.h>
 #include <optional>
 #include <string>
 

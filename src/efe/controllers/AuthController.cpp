@@ -36,7 +36,7 @@ namespace efe::controllers
         bool valid = !usuarioId.empty();
 
         JSON jsonResp;
-        jsonResp.value["valid"] = valid;
+        jsonResp["valid"] = valid;
 
         resp->setStatusCode(valid ? k200OK : k401Unauthorized);
         resp->setBody(jsonResp.toString());
@@ -87,7 +87,7 @@ namespace efe::controllers
         std::string jwt = JWT::generate(usuario->id);
 
         JSON jsonResp;
-        jsonResp.value["token"] = jwt;
+        jsonResp["token"] = jwt;
 
         resp->setStatusCode(k200OK);
         resp->setBody(jsonResp.toString());

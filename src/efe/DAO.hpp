@@ -33,8 +33,9 @@ namespace efe
          */
         virtual drogon::Task<bool> saveCoro(T& entity)
         {
+            const auto [sql, values] = buildInsertQuery(entity);
+
             try {
-                auto [sql, values] = buildInsertQuery(entity);
                 auto result = co_await getDb()->execSqlCoro(sql, values);
 
                 entity.id = result[0]["id"].template as<std::int64_t>();
@@ -54,8 +55,9 @@ namespace efe
          */
         virtual drogon::Task<bool> updateCoro(T& entity)
         {
+            const auto [sql, values] = buildUpdateQuery(entity);
+
             try {
-                auto [sql, values] = buildUpdateQuery(entity);
                 auto result = co_await getDb()->execSqlCoro(sql, values);
 
                 if (result.affectedRows() == 0)
@@ -77,15 +79,15 @@ namespace efe
         virtual drogon::Task<std::optional<T>> findByIdCoro(std::int64_t id)
         {
             T entity;
+            std::string sql = "SELECT * FROM " + entity.getTable() + " WHERE id = $1;";
 
             try {
-                std::string sql = "SELECT * FROM " + entity.getTable() + " WHERE id = $1;";
                 auto result = co_await getDb()->execSqlCoro(sql, id);
 
                 if (result.size() == 0)
                     co_return std::nullopt;
 
-                entity.fromResultSet(result);
+                entity.fromRowSet(result[0]);
                 co_return entity;
             } catch (const drogon::orm::DrogonDbException& e) {
                 LOG_ERROR << e.base().what();
@@ -102,7 +104,7 @@ namespace efe
         }
 
     private:
-        std::pair<std::string, const std::vector<std::string>> buildInsertQuery(const T& entity)
+        std::pair<std::string, std::vector<std::string>> buildInsertQuery(const T& entity)
         {
             const auto& columns = entity.getColumns();
 
@@ -131,7 +133,7 @@ namespace efe
             return {sql, values};
         }
 
-        std::pair<std::string, const std::vector<std::string>> buildUpdateQuery(const T& entity)
+        std::pair<std::string, std::vector<std::string>> buildUpdateQuery(const T& entity)
         {
             const auto& columns = entity.getColumns();
 

@@ -1,5 +1,6 @@
 #include "efe/JSON.hpp"
 #include "efe/controllers/UsuarioController.hpp"
+#include "efe/configuracao/dao/UsuarioDAO.hpp"
 #include "efe/configuracao/model/UsuarioEntity.hpp"
 
 #include <bcrypt/bcrypt.hpp>

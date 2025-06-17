@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include <drogon/orm/Field.h>
-#include <drogon/orm/Result.h>
+#include <drogon/orm/Row.h>
 #include <string>
 #include <unordered_map>
 
@@ -19,20 +19,20 @@ namespace efe::configuracao
         return columnsCache;
     }
 
-    void UsuarioEntity::fromResultSet(const drogon::orm::Result& result)
+    void UsuarioEntity::fromRowSet(const drogon::orm::Row& row)
     {
-        if (!result.empty()) {
-            if (!result[0]["id"].isNull())
-                id = result[0]["id"].as<std::int64_t>();
+        if (row.size() > 0) {
+            if (!row["id"].isNull())
+                id = row["id"].as<std::int64_t>();
 
-            if (!result[0]["nome"].isNull())
-                nome = result[0]["nome"].as<std::string>();
+            if (!row["nome"].isNull())
+                nome = row["nome"].as<std::string>();
 
-            if (!result[0]["login"].isNull())
-                login = result[0]["login"].as<std::string>();
+            if (!row["login"].isNull())
+                login = row["login"].as<std::string>();
 
-            if (!result[0]["senha"].isNull())
-                senha = result[0]["senha"].as<std::string>();
+            if (!row["senha"].isNull())
+                senha = row["senha"].as<std::string>();
         }
     }
 
@@ -46,9 +46,9 @@ namespace efe::configuracao
     JSON UsuarioEntity::toJSON() const
     {
         JSON json;
-        json.value["id"] = id;
-        json.value["nome"] = nome;
-        json.value["login"] = login;
+        json["id"] = id;
+        json["nome"] = nome;
+        json["login"] = login;
         return json;
     }
 }

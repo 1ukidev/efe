@@ -3,7 +3,6 @@
 #include <drogon/HttpRequest.h>
 #include <drogon/HttpResponse.h>
 #include <json/value.h>
-#include <json/writer.h>
 #include <string>
 
 namespace efe
@@ -33,10 +32,16 @@ namespace efe
         JSON() = default;
         ~JSON() = default;
 
-        Json::Value value{Json::objectValue};
+        Json::Value& operator[](const std::string& key) {
+            return value[key];
+        }
+
+        const Json::Value& operator[](const std::string& key) const {
+            return value[key];
+        }
 
         /**
-         * @brief Converte o JSON para string.
+         * @brief Retorna uma representação em string do JSON.
          * 
          * @return std::string
          */
@@ -67,5 +72,8 @@ namespace efe
          * @return AuthorizationResult
          */
         static AuthorizationResult checkAuthorization(const drogon::HttpRequestPtr& req);
+
+    private:
+        Json::Value value{Json::objectValue};
     };
 }
