@@ -57,7 +57,7 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Drogon CONFIG REQUIRED)
 find_package(Boost CONFIG REQUIRED COMPONENTS headers program_options)
 find_package(jwt-cpp CONFIG REQUIRED)
-find_package(yaml-cpp CONFIG REQUIRED)
+find_package(tomlplusplus CONFIG REQUIRED)
 
 target_link_libraries(
     efe PRIVATE
@@ -65,6 +65,6 @@ target_link_libraries(
     Boost::headers
     Boost::program_options
     jwt-cpp::jwt-cpp
-    yaml-cpp::yaml-cpp
+    tomlplusplus::tomlplusplus
     bcrypt
 )

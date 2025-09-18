@@ -1,8 +1,8 @@
 #pragma once
 
-#include "efe/Singleton.hpp"
-
 #include <chrono>
+
+#include "efe/Singleton.hpp"
 
 namespace efe
 {

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "efe/Singleton.hpp"
-
 #include <drogon/orm/DbConfig.h>
 #include <string>
-#include <yaml-cpp/yaml.h>
+#include <toml++/toml.hpp>
+
+#include "efe/Singleton.hpp"
 
 namespace efe
 {
@@ -34,7 +34,7 @@ namespace efe
         ~Config() = default;
 
         bool loaded_ = false;
-        YAML::Node config_;
+        toml::table config_;
 
         bool pull();
     };

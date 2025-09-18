@@ -1,6 +1,3 @@
-#include "efe/Global.hpp"
-#include "efe/controllers/RootController.hpp"
-
 #include <chrono>
 #include <drogon/HttpAppFramework.h>
 #include <drogon/HttpRequest.h>
@@ -9,6 +6,9 @@
 #include <drogon/HttpViewData.h>
 #include <string>
 #include <vector>
+
+#include "efe/Global.hpp"
+#include "efe/controllers/RootController.hpp"
 
 namespace efe::controllers
 {
@@ -36,7 +36,7 @@ namespace efe::controllers
         }
         rotas += "\n    </ul>";
 
-        HttpViewData data;
+        HttpViewData data{};
         data.insert("uptime", uptime);
         data.insert("rotas", rotas);
 

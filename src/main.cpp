@@ -1,11 +1,6 @@
 // Copyright (c) 1ukidev <leo.monteiro06@live.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-#include "efe/Config.hpp"
-#include "efe/Constants.hpp"
-#include "efe/Global.hpp"
-#include "efe/JSON.hpp"
-
 #include <boost/program_options.hpp>
 #include <chrono>
 #include <cstdlib>
@@ -15,6 +10,11 @@
 #include <string_view>
 #include <thread>
 #include <trantor/utils/Logger.h>
+
+#include "efe/Config.hpp"
+#include "efe/Constants.hpp"
+#include "efe/Global.hpp"
+#include "efe/JSON.hpp"
 
 using namespace drogon;
 using namespace trantor;
@@ -42,7 +42,7 @@ void exceptionHandler(const std::exception& e,
 int main(int argc, char** argv)
 {
     unsigned int threadsCount = std::thread::hardware_concurrency();
-    po::options_description desc("Opções disponíveis");
+    po::options_description desc{"Opções disponíveis"};
 
     desc.add_options()
         ("help,h", "Mostra essa mensagem de ajuda")
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
         ("port,p", po::value<short>()->default_value(9999), "Porta do servidor")
         ("threads,t", po::value<short>()->default_value(threadsCount), "Número de threads");
 
-    po::variables_map vm;
+    po::variables_map vm{};
 
     try {
         store(parse_command_line(argc, argv, desc), vm);
@@ -113,7 +113,7 @@ int main(int argc, char** argv)
     app().registerBeginningAdvice([port, threads, startTime]() {
         auto endTime = std::chrono::steady_clock::now();
         auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
-        
+
         LOG_INFO << "Servidor inicializado com sucesso na porta " << port << " com " << threads << " thread(s)";
         LOG_INFO << "Levou " << elapsedTime << " ms para inicializar";
     });

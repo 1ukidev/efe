@@ -1,10 +1,10 @@
-#include "efe/JWT.hpp"
-#include "JSON.hpp"
-
 #include <drogon/HttpRequest.h>
 #include <drogon/HttpResponse.h>
 #include <json/writer.h>
 #include <string>
+
+#include "efe/JWT.hpp"
+#include "JSON.hpp"
 
 namespace efe
 {
@@ -12,7 +12,7 @@ namespace efe
 
     std::string JSON::toString() const
     {
-        Json::StreamWriterBuilder builder;
+        Json::StreamWriterBuilder builder{};
         return Json::writeString(builder, value);
     }
 

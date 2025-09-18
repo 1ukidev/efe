@@ -1,13 +1,13 @@
-#include "efe/controllers/AuthController.hpp"
-#include "efe/JSON.hpp"
-#include "efe/JWT.hpp"
-
 #include <bcrypt/bcrypt.hpp>
 #include <drogon/HttpRequest.h>
 #include <drogon/HttpResponse.h>
 #include <drogon/HttpTypes.h>
 #include <drogon/utils/coroutine.h>
 #include <string>
+
+#include "efe/controllers/AuthController.hpp"
+#include "efe/JSON.hpp"
+#include "efe/JWT.hpp"
 
 namespace efe::controllers
 {
@@ -35,7 +35,7 @@ namespace efe::controllers
         std::string usuarioId = JWT::verify(token);
         bool valid = !usuarioId.empty();
 
-        JSON jsonResp;
+        JSON jsonResp{};
         jsonResp["valid"] = valid;
 
         resp->setStatusCode(valid ? k200OK : k401Unauthorized);
@@ -86,7 +86,7 @@ namespace efe::controllers
 
         std::string jwt = JWT::generate(usuario->id);
 
-        JSON jsonResp;
+        JSON jsonResp{};
         jsonResp["token"] = jwt;
 
         resp->setStatusCode(k200OK);

@@ -1,8 +1,8 @@
-#include "efe/configuracao/dao/UsuarioDAO.hpp"
-
 #include <drogon/utils/coroutine.h>
 #include <optional>
 #include <string>
+
+#include "efe/configuracao/dao/UsuarioDAO.hpp"
 
 namespace efe::configuracao
 {
@@ -18,7 +18,7 @@ namespace efe::configuracao
             if (result.size() == 0)
                 co_return std::nullopt;
 
-            UsuarioEntity usuario;
+            UsuarioEntity usuario{};
             usuario.fromRowSet(result[0]);
             co_return usuario;
         } catch (const orm::DrogonDbException& e) {

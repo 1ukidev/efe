@@ -1,22 +1,21 @@
-#include "efe/configuracao/model/UsuarioEntity.hpp"
-#include "efe/JSON.hpp"
-
 #include <cstdint>
 #include <drogon/orm/Field.h>
 #include <drogon/orm/Row.h>
 #include <string>
 #include <unordered_map>
 
+#include "efe/configuracao/model/UsuarioEntity.hpp"
+#include "efe/JSON.hpp"
+
 namespace efe::configuracao
 {
-    const std::unordered_map<std::string, std::string>& UsuarioEntity::getColumns() const
+    const std::unordered_map<std::string, std::string> UsuarioEntity::getColumns() const
     {
-        columnsCache = {
+        return {
             {"nome", nome},
             {"login", login},
             {"senha", senha}
         };
-        return columnsCache;
     }
 
     void UsuarioEntity::fromRowSet(const drogon::orm::Row& row)
@@ -45,7 +44,7 @@ namespace efe::configuracao
 
     JSON UsuarioEntity::toJSON() const
     {
-        JSON json;
+        JSON json{};
         json["id"] = id;
         json["nome"] = nome;
         json["login"] = login;

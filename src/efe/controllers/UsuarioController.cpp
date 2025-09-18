@@ -1,14 +1,14 @@
-#include "efe/JSON.hpp"
-#include "efe/controllers/UsuarioController.hpp"
-#include "efe/configuracao/dao/UsuarioDAO.hpp"
-#include "efe/configuracao/model/UsuarioEntity.hpp"
-
 #include <bcrypt/bcrypt.hpp>
 #include <drogon/HttpRequest.h>
 #include <drogon/HttpResponse.h>
 #include <drogon/HttpTypes.h>
 #include <drogon/utils/coroutine.h>
 #include <string>
+
+#include "efe/JSON.hpp"
+#include "efe/controllers/UsuarioController.hpp"
+#include "efe/configuracao/dao/UsuarioDAO.hpp"
+#include "efe/configuracao/model/UsuarioEntity.hpp"
 
 namespace efe::controllers
 {
@@ -53,7 +53,7 @@ namespace efe::controllers
 
         senha = bcrypt::generateHash(senha, 10);
 
-        UsuarioEntity entity(nome, login, senha);
+        UsuarioEntity entity{nome, login, senha};
         bool ok = co_await dao->saveCoro(entity);
 
         resp->setStatusCode(ok ? k201Created : k500InternalServerError);

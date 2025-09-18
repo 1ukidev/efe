@@ -1,11 +1,11 @@
 #pragma once
 
-#include "efe/configuracao/dao/UsuarioDAO.hpp"
-
 #include <drogon/HttpController.h>
 #include <drogon/HttpRequest.h>
 #include <drogon/HttpResponse.h>
 #include <drogon/utils/coroutine.h>
+
+#include "efe/configuracao/dao/UsuarioDAO.hpp"
 
 namespace efe::controllers
 {

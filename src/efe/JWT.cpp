@@ -1,10 +1,10 @@
-#include "JWT.hpp"
-#include "efe/Config.hpp"
-
 #include <chrono>
 #include <cstdint>
 #include <string>
 #include <jwt-cpp/jwt.h>
+
+#include "JWT.hpp"
+#include "efe/Config.hpp"
 
 namespace efe
 {
@@ -26,7 +26,7 @@ namespace efe
 
         try {
             std::string jwt = token;
-            const std::string prefix = "Bearer ";
+            std::string prefix = "Bearer ";
             if (jwt.rfind(prefix, 0) == 0) {
                 jwt = jwt.substr(prefix.length());
             }

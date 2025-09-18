@@ -1,13 +1,13 @@
 #pragma once
 
-#include "efe/DAO.hpp"
-#include "efe/configuracao/model/UsuarioEntity.hpp"
-
 #include <drogon/plugins/Plugin.h>
 #include <drogon/utils/coroutine.h>
 #include <json/value.h>
 #include <optional>
 #include <string>
+
+#include "efe/DAO.hpp"
+#include "efe/configuracao/model/UsuarioEntity.hpp"
 
 namespace efe::configuracao
 {

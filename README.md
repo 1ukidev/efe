@@ -1,5 +1,3 @@
-**(WIP - Ainda não deve ser utilizado em produção)**
-
 ```
        __
   ___ / _| ___
@@ -12,6 +10,10 @@ O efe é uma base para APIs aonde o desempenho é crucial. É feito em C++ moder
 
 Veja mais aqui: [1ukidev.github.io/postagens/api-cpp](http://1ukidev.github.io/postagens/api-cpp)
 
+## TODO
+- Testes unitários
+- clang-format
+
 ## Algumas bibliotecas utilizadas
 - [Drogon](https://github.com/1ukidev/drogon)
   - [TRANTOR](https://github.com/an-tao/trantor)
@@ -22,5 +24,5 @@ Veja mais aqui: [1ukidev.github.io/postagens/api-cpp](http://1ukidev.github.io/p
 - [Boost](https://github.com/boostorg/boost)
   - [program_options](https://github.com/boostorg/program_options)
 - [jwt-cpp](https://github.com/Thalhammer/jwt-cpp)
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
+- [toml++](https://github.com/marzer/tomlplusplus)
 - [libbcrypt](https://github.com/1ukidev/libbcrypt)

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "efe/JSON.hpp"
-
 #include <cstdint>
 #include <drogon/orm/Row.h>
 #include <json/value.h>
 #include <string>
 #include <unordered_map>
+
+#include "efe/JSON.hpp"
 
 namespace efe
 {
@@ -32,9 +32,9 @@ namespace efe
         /**
          * @brief Retorna um mapa com os nomes das colunas e seus respectivos valores.
          * 
-         * @return const std::unordered_map<std::string, std::string>&
+         * @return const std::unordered_map<std::string, std::string>
          */
-        virtual const std::unordered_map<std::string, std::string>& getColumns() const = 0;
+        virtual const std::unordered_map<std::string, std::string> getColumns() const = 0;
 
         /**
          * @brief Preenche a entidade com os valores do resultado de uma consulta.

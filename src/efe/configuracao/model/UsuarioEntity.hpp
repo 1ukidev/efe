@@ -1,11 +1,11 @@
 #pragma once
 
-#include "efe/Entity.hpp"
-#include "efe/JSON.hpp"
-
 #include <drogon/orm/Row.h>
 #include <string>
 #include <unordered_map>
+
+#include "efe/Entity.hpp"
+#include "efe/JSON.hpp"
 
 namespace efe::configuracao
 {
@@ -21,7 +21,7 @@ namespace efe::configuracao
         std::string getClassName() const override { return "UsuarioEntity"; }
         std::string getTable() const override { return "usuario"; }
 
-        const std::unordered_map<std::string, std::string>& getColumns() const override;
+        const std::unordered_map<std::string, std::string> getColumns() const override;
         void fromRowSet(const drogon::orm::Row& result) override;
 
         std::string toString() const override;
@@ -30,8 +30,5 @@ namespace efe::configuracao
         std::string nome;
         std::string login;
         std::string senha;
-
-    private:
-        mutable std::unordered_map<std::string, std::string> columnsCache;
     };
 }

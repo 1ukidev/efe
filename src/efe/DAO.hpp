@@ -1,7 +1,5 @@
 #pragma once
 
-#include "efe/Entity.hpp"
-
 #include <cstdint>
 #include <drogon/HttpAppFramework.h>
 #include <drogon/orm/DbClient.h>
@@ -11,8 +9,11 @@
 #include <string>
 #include <trantor/utils/Logger.h>
 #include <type_traits>
+#include <unordered_map>
 #include <utility>
 #include <vector>
+
+#include "efe/Entity.hpp"
 
 namespace efe
 {
@@ -78,7 +79,7 @@ namespace efe
          */
         virtual drogon::Task<std::optional<T>> findByIdCoro(std::int64_t id)
         {
-            T entity;
+            T entity{};
             std::string sql = "SELECT * FROM " + entity.getTable() + " WHERE id = $1;";
 
             try {
@@ -106,7 +107,7 @@ namespace efe
     private:
         std::pair<std::string, std::vector<std::string>> buildInsertQuery(const T& entity)
         {
-            const auto& columns = entity.getColumns();
+            std::unordered_map<std::string, std::string> columns = entity.getColumns();
 
             std::string sql = "INSERT INTO " + entity.getTable() + " (";
 
@@ -125,7 +126,7 @@ namespace efe
                 first = false;
             }
 
-            std::vector<std::string> values;
+            std::vector<std::string> values{};
             for (const auto& [_, value] : columns)
                 values.push_back(value);
 
@@ -135,11 +136,11 @@ namespace efe
 
         std::pair<std::string, std::vector<std::string>> buildUpdateQuery(const T& entity)
         {
-            const auto& columns = entity.getColumns();
+            std::unordered_map<std::string, std::string> columns = entity.getColumns();
 
             std::string sql = "UPDATE " + entity.getTable() + " SET ";
 
-            std::vector<std::string> values;
+            std::vector<std::string> values{};
             size_t index = 1;
             for (const auto& [column, value] : columns) {
                 if (index > 1) sql += ", ";
